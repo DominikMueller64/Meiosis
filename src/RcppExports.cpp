@@ -3,49 +3,59 @@
 
 #include "../inst/include/Meiosis.h"
 #include <Rcpp.h>
-#include <string>
-#include <set>
 
 using namespace Rcpp;
 
-// calc_Lstar
-double calc_Lstar(double L, int m, double p, double epsilon);
-static SEXP Meiosis_calc_Lstar_try(SEXP LSEXP, SEXP mSEXP, SEXP pSEXP, SEXP epsilonSEXP) {
+// bcgv
+Rcpp::List bcgv(std::vector<std::vector<std::vector<double>>> individual, std::vector<std::vector<double>> positions, std::vector<std::vector<double>> locus_effects, const int n_gam, const double se_level, const int min_rep, const int max_rep, const int m, const double p);
+RcppExport SEXP Meiosis_bcgv(SEXP individualSEXP, SEXP positionsSEXP, SEXP locus_effectsSEXP, SEXP n_gamSEXP, SEXP se_levelSEXP, SEXP min_repSEXP, SEXP max_repSEXP, SEXP mSEXP, SEXP pSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< std::vector<std::vector<std::vector<double>>> >::type individual(individualSEXP);
+    Rcpp::traits::input_parameter< std::vector<std::vector<double>> >::type positions(positionsSEXP);
+    Rcpp::traits::input_parameter< std::vector<std::vector<double>> >::type locus_effects(locus_effectsSEXP);
+    Rcpp::traits::input_parameter< const int >::type n_gam(n_gamSEXP);
+    Rcpp::traits::input_parameter< const double >::type se_level(se_levelSEXP);
+    Rcpp::traits::input_parameter< const int >::type min_rep(min_repSEXP);
+    Rcpp::traits::input_parameter< const int >::type max_rep(max_repSEXP);
+    Rcpp::traits::input_parameter< const int >::type m(mSEXP);
+    Rcpp::traits::input_parameter< const double >::type p(pSEXP);
+    rcpp_result_gen = Rcpp::wrap(bcgv(individual, positions, locus_effects, n_gam, se_level, min_rep, max_rep, m, p));
+    return rcpp_result_gen;
+END_RCPP
+}
+// to_matrix
+Rcpp::IntegerMatrix to_matrix(const Rcpp::List& x);
+RcppExport SEXP Meiosis_to_matrix(SEXP xSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const Rcpp::List& >::type x(xSEXP);
+    rcpp_result_gen = Rcpp::wrap(to_matrix(x));
+    return rcpp_result_gen;
+END_RCPP
+}
+// calc_Lstar
+double calc_Lstar(double L, int m, double p, double epsilon);
+RcppExport SEXP Meiosis_calc_Lstar(SEXP LSEXP, SEXP mSEXP, SEXP pSEXP, SEXP epsilonSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< double >::type L(LSEXP);
     Rcpp::traits::input_parameter< int >::type m(mSEXP);
     Rcpp::traits::input_parameter< double >::type p(pSEXP);
     Rcpp::traits::input_parameter< double >::type epsilon(epsilonSEXP);
     rcpp_result_gen = Rcpp::wrap(calc_Lstar(L, m, p, epsilon));
     return rcpp_result_gen;
-END_RCPP_RETURN_ERROR
-}
-RcppExport SEXP Meiosis_calc_Lstar(SEXP LSEXP, SEXP mSEXP, SEXP pSEXP, SEXP epsilonSEXP) {
-    SEXP rcpp_result_gen;
-    {
-        Rcpp::RNGScope rcpp_rngScope_gen;
-        rcpp_result_gen = PROTECT(Meiosis_calc_Lstar_try(LSEXP, mSEXP, pSEXP, epsilonSEXP));
-    }
-    Rboolean rcpp_isInterrupt_gen = Rf_inherits(rcpp_result_gen, "interrupted-error");
-    if (rcpp_isInterrupt_gen) {
-        UNPROTECT(1);
-        Rf_onintr();
-    }
-    Rboolean rcpp_isError_gen = Rf_inherits(rcpp_result_gen, "try-error");
-    if (rcpp_isError_gen) {
-        SEXP rcpp_msgSEXP_gen = Rf_asChar(rcpp_result_gen);
-        UNPROTECT(1);
-        Rf_error(CHAR(rcpp_msgSEXP_gen));
-    }
-    UNPROTECT(1);
-    return rcpp_result_gen;
+END_RCPP
 }
 // crossover
-std::vector<double> crossover(const double L, const int m, const double p, const bool obligate_chiasma, const double Lstar);
-static SEXP Meiosis_crossover_try(SEXP LSEXP, SEXP mSEXP, SEXP pSEXP, SEXP obligate_chiasmaSEXP, SEXP LstarSEXP) {
+Rcpp::NumericVector crossover(const double L, const int m, const double p, const bool obligate_chiasma, const double Lstar);
+RcppExport SEXP Meiosis_crossover(SEXP LSEXP, SEXP mSEXP, SEXP pSEXP, SEXP obligate_chiasmaSEXP, SEXP LstarSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< const double >::type L(LSEXP);
     Rcpp::traits::input_parameter< const int >::type m(mSEXP);
     Rcpp::traits::input_parameter< const double >::type p(pSEXP);
@@ -53,79 +63,142 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< const double >::type Lstar(LstarSEXP);
     rcpp_result_gen = Rcpp::wrap(crossover(L, m, p, obligate_chiasma, Lstar));
     return rcpp_result_gen;
-END_RCPP_RETURN_ERROR
+END_RCPP
 }
-RcppExport SEXP Meiosis_crossover(SEXP LSEXP, SEXP mSEXP, SEXP pSEXP, SEXP obligate_chiasmaSEXP, SEXP LstarSEXP) {
-    SEXP rcpp_result_gen;
-    {
-        Rcpp::RNGScope rcpp_rngScope_gen;
-        rcpp_result_gen = PROTECT(Meiosis_crossover_try(LSEXP, mSEXP, pSEXP, obligate_chiasmaSEXP, LstarSEXP));
-    }
-    Rboolean rcpp_isInterrupt_gen = Rf_inherits(rcpp_result_gen, "interrupted-error");
-    if (rcpp_isInterrupt_gen) {
-        UNPROTECT(1);
-        Rf_onintr();
-    }
-    Rboolean rcpp_isError_gen = Rf_inherits(rcpp_result_gen, "try-error");
-    if (rcpp_isError_gen) {
-        SEXP rcpp_msgSEXP_gen = Rf_asChar(rcpp_result_gen);
-        UNPROTECT(1);
-        Rf_error(CHAR(rcpp_msgSEXP_gen));
-    }
-    UNPROTECT(1);
-    return rcpp_result_gen;
-}
-// meiosis_xodat_R
-Rcpp::List meiosis_xodat_R(const Rcpp::IntegerVector& patalle, const Rcpp::NumericVector& patloc, const Rcpp::IntegerVector& matalle, const Rcpp::NumericVector& matloc, const Rcpp::NumericVector& xlocations);
-static SEXP Meiosis_meiosis_xodat_R_try(SEXP patalleSEXP, SEXP patlocSEXP, SEXP matalleSEXP, SEXP matlocSEXP, SEXP xlocationsSEXP) {
+// meiosis_geno_
+Rcpp::IntegerVector meiosis_geno_(const Rcpp::IntegerVector& patalle, const Rcpp::IntegerVector& matalle, const Rcpp::NumericVector& pos, const double L, const int m, const double p, const bool obligate_chiasma, const double Lstar);
+RcppExport SEXP Meiosis_meiosis_geno_(SEXP patalleSEXP, SEXP matalleSEXP, SEXP posSEXP, SEXP LSEXP, SEXP mSEXP, SEXP pSEXP, SEXP obligate_chiasmaSEXP, SEXP LstarSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const Rcpp::IntegerVector& >::type patalle(patalleSEXP);
+    Rcpp::traits::input_parameter< const Rcpp::IntegerVector& >::type matalle(matalleSEXP);
+    Rcpp::traits::input_parameter< const Rcpp::NumericVector& >::type pos(posSEXP);
+    Rcpp::traits::input_parameter< const double >::type L(LSEXP);
+    Rcpp::traits::input_parameter< const int >::type m(mSEXP);
+    Rcpp::traits::input_parameter< const double >::type p(pSEXP);
+    Rcpp::traits::input_parameter< const bool >::type obligate_chiasma(obligate_chiasmaSEXP);
+    Rcpp::traits::input_parameter< const double >::type Lstar(LstarSEXP);
+    rcpp_result_gen = Rcpp::wrap(meiosis_geno_(patalle, matalle, pos, L, m, p, obligate_chiasma, Lstar));
+    return rcpp_result_gen;
+END_RCPP
+}
+// meiosis_geno
+Rcpp::List meiosis_geno(const Rcpp::List& individual, const Rcpp::List& positions, const Rcpp::List& xodat_param);
+RcppExport SEXP Meiosis_meiosis_geno(SEXP individualSEXP, SEXP positionsSEXP, SEXP xodat_paramSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const Rcpp::List& >::type individual(individualSEXP);
+    Rcpp::traits::input_parameter< const Rcpp::List& >::type positions(positionsSEXP);
+    Rcpp::traits::input_parameter< const Rcpp::List& >::type xodat_param(xodat_paramSEXP);
+    rcpp_result_gen = Rcpp::wrap(meiosis_geno(individual, positions, xodat_param));
+    return rcpp_result_gen;
+END_RCPP
+}
+// meiosis_xodat_
+Rcpp::List meiosis_xodat_(const Rcpp::IntegerVector& patalle, const Rcpp::NumericVector& patloc, const Rcpp::IntegerVector& matalle, const Rcpp::NumericVector& matloc, const double L, const int m, const double p, const bool obligate_chiasma, const double Lstar);
+RcppExport SEXP Meiosis_meiosis_xodat_(SEXP patalleSEXP, SEXP patlocSEXP, SEXP matalleSEXP, SEXP matlocSEXP, SEXP LSEXP, SEXP mSEXP, SEXP pSEXP, SEXP obligate_chiasmaSEXP, SEXP LstarSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< const Rcpp::IntegerVector& >::type patalle(patalleSEXP);
     Rcpp::traits::input_parameter< const Rcpp::NumericVector& >::type patloc(patlocSEXP);
     Rcpp::traits::input_parameter< const Rcpp::IntegerVector& >::type matalle(matalleSEXP);
     Rcpp::traits::input_parameter< const Rcpp::NumericVector& >::type matloc(matlocSEXP);
-    Rcpp::traits::input_parameter< const Rcpp::NumericVector& >::type xlocations(xlocationsSEXP);
-    rcpp_result_gen = Rcpp::wrap(meiosis_xodat_R(patalle, patloc, matalle, matloc, xlocations));
+    Rcpp::traits::input_parameter< const double >::type L(LSEXP);
+    Rcpp::traits::input_parameter< const int >::type m(mSEXP);
+    Rcpp::traits::input_parameter< const double >::type p(pSEXP);
+    Rcpp::traits::input_parameter< const bool >::type obligate_chiasma(obligate_chiasmaSEXP);
+    Rcpp::traits::input_parameter< const double >::type Lstar(LstarSEXP);
+    rcpp_result_gen = Rcpp::wrap(meiosis_xodat_(patalle, patloc, matalle, matloc, L, m, p, obligate_chiasma, Lstar));
     return rcpp_result_gen;
-END_RCPP_RETURN_ERROR
+END_RCPP
 }
-RcppExport SEXP Meiosis_meiosis_xodat_R(SEXP patalleSEXP, SEXP patlocSEXP, SEXP matalleSEXP, SEXP matlocSEXP, SEXP xlocationsSEXP) {
-    SEXP rcpp_result_gen;
-    {
-        Rcpp::RNGScope rcpp_rngScope_gen;
-        rcpp_result_gen = PROTECT(Meiosis_meiosis_xodat_R_try(patalleSEXP, patlocSEXP, matalleSEXP, matlocSEXP, xlocationsSEXP));
-    }
-    Rboolean rcpp_isInterrupt_gen = Rf_inherits(rcpp_result_gen, "interrupted-error");
-    if (rcpp_isInterrupt_gen) {
-        UNPROTECT(1);
-        Rf_onintr();
-    }
-    Rboolean rcpp_isError_gen = Rf_inherits(rcpp_result_gen, "try-error");
-    if (rcpp_isError_gen) {
-        SEXP rcpp_msgSEXP_gen = Rf_asChar(rcpp_result_gen);
-        UNPROTECT(1);
-        Rf_error(CHAR(rcpp_msgSEXP_gen));
-    }
-    UNPROTECT(1);
+// meiosis_xodat
+Rcpp::List meiosis_xodat(const Rcpp::List& individual, const Rcpp::List& xodat_param);
+RcppExport SEXP Meiosis_meiosis_xodat(SEXP individualSEXP, SEXP xodat_paramSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const Rcpp::List& >::type individual(individualSEXP);
+    Rcpp::traits::input_parameter< const Rcpp::List& >::type xodat_param(xodat_paramSEXP);
+    rcpp_result_gen = Rcpp::wrap(meiosis_xodat(individual, xodat_param));
     return rcpp_result_gen;
+END_RCPP
 }
-
-// validate (ensure exported C++ functions exist before calling them)
-static int Meiosis_RcppExport_validate(const char* sig) { 
-    static std::set<std::string> signatures;
-    if (signatures.empty()) {
-        signatures.insert("double(*calc_Lstar)(double,int,double,double)");
-        signatures.insert("std::vector<double>(*crossover)(const double,const int,const double,const bool,const double)");
-        signatures.insert("Rcpp::List(*meiosis_xodat)(const Rcpp::IntegerVector&,const Rcpp::NumericVector&,const Rcpp::IntegerVector&,const Rcpp::NumericVector&,const Rcpp::NumericVector&)");
-    }
-    return signatures.find(sig) != signatures.end();
+// cross_geno
+Rcpp::List cross_geno(const Rcpp::List& father, const Rcpp::List& mother, const Rcpp::List& positions, const Rcpp::List& xodat_param);
+RcppExport SEXP Meiosis_cross_geno(SEXP fatherSEXP, SEXP motherSEXP, SEXP positionsSEXP, SEXP xodat_paramSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const Rcpp::List& >::type father(fatherSEXP);
+    Rcpp::traits::input_parameter< const Rcpp::List& >::type mother(motherSEXP);
+    Rcpp::traits::input_parameter< const Rcpp::List& >::type positions(positionsSEXP);
+    Rcpp::traits::input_parameter< const Rcpp::List& >::type xodat_param(xodat_paramSEXP);
+    rcpp_result_gen = Rcpp::wrap(cross_geno(father, mother, positions, xodat_param));
+    return rcpp_result_gen;
+END_RCPP
 }
-
-// registerCCallable (register entry points for exported C++ functions)
-RcppExport SEXP Meiosis_RcppExport_registerCCallable() { 
-    R_RegisterCCallable("Meiosis", "Meiosis_calc_Lstar", (DL_FUNC)Meiosis_calc_Lstar_try);
-    R_RegisterCCallable("Meiosis", "Meiosis_crossover", (DL_FUNC)Meiosis_crossover_try);
-    R_RegisterCCallable("Meiosis", "Meiosis_meiosis_xodat", (DL_FUNC)Meiosis_meiosis_xodat_R_try);
-    R_RegisterCCallable("Meiosis", "Meiosis_RcppExport_validate", (DL_FUNC)Meiosis_RcppExport_validate);
-    return R_NilValue;
+// cross_xodat
+Rcpp::List cross_xodat(const Rcpp::List& father, const Rcpp::List& mother, const Rcpp::List& xodat_param);
+RcppExport SEXP Meiosis_cross_xodat(SEXP fatherSEXP, SEXP motherSEXP, SEXP xodat_paramSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const Rcpp::List& >::type father(fatherSEXP);
+    Rcpp::traits::input_parameter< const Rcpp::List& >::type mother(motherSEXP);
+    Rcpp::traits::input_parameter< const Rcpp::List& >::type xodat_param(xodat_paramSEXP);
+    rcpp_result_gen = Rcpp::wrap(cross_xodat(father, mother, xodat_param));
+    return rcpp_result_gen;
+END_RCPP
+}
+// dh_geno
+Rcpp::List dh_geno(const Rcpp::List& individual, const Rcpp::List& positions, const Rcpp::List& xodat_param);
+RcppExport SEXP Meiosis_dh_geno(SEXP individualSEXP, SEXP positionsSEXP, SEXP xodat_paramSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const Rcpp::List& >::type individual(individualSEXP);
+    Rcpp::traits::input_parameter< const Rcpp::List& >::type positions(positionsSEXP);
+    Rcpp::traits::input_parameter< const Rcpp::List& >::type xodat_param(xodat_paramSEXP);
+    rcpp_result_gen = Rcpp::wrap(dh_geno(individual, positions, xodat_param));
+    return rcpp_result_gen;
+END_RCPP
+}
+// dh_xodat
+Rcpp::List dh_xodat(const Rcpp::List& individual, const Rcpp::List& xodat_param);
+RcppExport SEXP Meiosis_dh_xodat(SEXP individualSEXP, SEXP xodat_paramSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const Rcpp::List& >::type individual(individualSEXP);
+    Rcpp::traits::input_parameter< const Rcpp::List& >::type xodat_param(xodat_paramSEXP);
+    rcpp_result_gen = Rcpp::wrap(dh_xodat(individual, xodat_param));
+    return rcpp_result_gen;
+END_RCPP
+}
+// realized_ibd
+double realized_ibd(const Rcpp::List& individual_1, const Rcpp::List& individual_2);
+RcppExport SEXP Meiosis_realized_ibd(SEXP individual_1SEXP, SEXP individual_2SEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const Rcpp::List& >::type individual_1(individual_1SEXP);
+    Rcpp::traits::input_parameter< const Rcpp::List& >::type individual_2(individual_2SEXP);
+    rcpp_result_gen = Rcpp::wrap(realized_ibd(individual_1, individual_2));
+    return rcpp_result_gen;
+END_RCPP
+}
+// realized_f
+double realized_f(const Rcpp::List& individual);
+RcppExport SEXP Meiosis_realized_f(SEXP individualSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const Rcpp::List& >::type individual(individualSEXP);
+    rcpp_result_gen = Rcpp::wrap(realized_f(individual));
+    return rcpp_result_gen;
+END_RCPP
 }

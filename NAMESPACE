@@ -1,3 +1,4 @@
 useDynLib(Meiosis)
 exportPattern("^[[:alpha:]]+")
+import(methods, Rcpp)
 importFrom(Rcpp, evalCpp)
