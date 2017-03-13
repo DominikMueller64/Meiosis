@@ -57,3 +57,19 @@ realized_f <- function(individual) {
     .Call('Meiosis_realized_f', PACKAGE = 'Meiosis', individual)
 }
 
+meiosis_xodat_test_R <- function(patalle, patloc, matalle, matloc, L, m, p, obligate_chiasma, Lstar) {
+    .Call('Meiosis_meiosis_xodat_test_R', PACKAGE = 'Meiosis', patalle, patloc, matalle, matloc, L, m, p, obligate_chiasma, Lstar)
+}
+
+meiosis_xodat_test_R2 <- function(patalle, patloc, matalle, matloc, L, m, p, obligate_chiasma, Lstar) {
+    .Call('Meiosis_meiosis_xodat_test_R2', PACKAGE = 'Meiosis', patalle, patloc, matalle, matloc, L, m, p, obligate_chiasma, Lstar)
+}
+
+find_lb <- function(x, val) {
+    .Call('Meiosis_find_lb', PACKAGE = 'Meiosis', x, val)
+}
+
+find_bf <- function(x, val) {
+    .Call('Meiosis_find_bf', PACKAGE = 'Meiosis', x, val)
+}
+

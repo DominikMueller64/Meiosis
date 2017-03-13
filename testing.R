@@ -1,45 +1,34 @@
 library('purrr')
 library('Meiosis')
+
+set.seed(123L)
+
+## n_loci <- 10000L
+## L <- 500.0
+## n_iter <- 1e2L
+
+## pred <- vector('list', n_iter)
+## for (i in seq_len(n_iter)) {
+##   pred[[i]]$patalle <- sample(c(0L, 1L, 2L), size = n_loci, replace = TRUE)
+##   pred[[i]]$matalle <- sample(c(5L, 8L, 9L), size = n_loci, replace = TRUE)
+##   pred[[i]]$patloc <- c(sort(runif(n_loci - 1, max = L)), L)
+##   pred[[i]]$matloc <- c(sort(runif(n_loci - 1, max = L)), L)
+## }
+
+## i <- pred[[1]]
+## meiosis_xodat_test_R(i$patalle, i$patloc, i$matalle, i$matloc,L,0L,0.0,F, L)
+
+## microbenchmark::microbenchmark(times = 100L,
+## a = {for(i in pred) meiosis_xodat_test_R(i$patalle, i$patloc, i$matalle, i$matloc,L,0L,0.0,F,L)},
+## b = {for(i in pred) meiosis_xodat_test_R2(i$patalle, i$patloc, i$matalle, i$matloc,L,0L,0.0,F, L)}
+## )
+
+
 ## library('microbenchmark')
 ## bn <- microbenchmark::microbenchmark
 ## ls.str(as.environment("package:Meiosis"))
 sim_geno_individual <- function(n_loci, alleles) {
   purrr::rerun(2L, purrr::map(n_loci, ~sample(x = alleles, size = .x, replace = TRUE)))
-}
-
-
-bcgv_r <- function(individual, positions, xodat_param, locus_effects,
-                n_gam, se_level, min_rep = 2L, max_rep) {
-  L <- vapply(X = positions, FUN = function(x) ceiling(max(x)), FUN.VALUE = numeric(1L))
-  xodat_param <- Meiosis::create_xodat_param(L = L, m = 0L, p = 0.0, obligate_chiasma = FALSE)
-  f <- Meiosis::meiosis_geno
-
-  n <- 0L
-  online_mean <- 0.0
-  M2 <- 0.0
-
-  vec <-numeric()
-  while(n <= min_rep || (se >= se_level && n <= max_rep))
-  {
-    values <- numeric(n_gam)
-    for (i in seq_len(n_gam)) {
-      gam <- f(individual = individual, positions = positions,
-                xodat_param = xodat_param)
-      values[i] <- sum(vapply(X = seq_along(gam), FUN.VALUE = numeric(1L),
-                              FUN = function(i) crossprod(gam[[i]], locus_effects[[i]])))
-    }
-    max_val <- max(values)
-
-    vec <- c(vec,max_val)
-
-    n <- n + 1L
-    delta <- max_val - online_mean
-    online_mean <- online_mean + delta / n
-    delta2 <- max_val - online_mean
-    M2 <- M2 + delta * delta2
-    se <- sqrt(M2 / (n * (n - 1)))
-  }
-  return(list('bcgv' = online_mean, 'se' = se, 'n' = n))
 }
 
 
@@ -52,24 +41,50 @@ L <- rep(x = L_, times = n_chr)
 ## Lstar <- purrr::map_dbl(.x = L, .f = ~Meiosis::calc_Lstar(.x, m, p, 1e-6))
 xodat_param <- create_xodat_param(L = L, m = m, p = p, obligate_chiasma = obligate_chiasma)
 
-n_loci <- rep(x = 100L, times = n_chr)
+n_loci <- rep(x = 10000L, times = n_chr)
 alleles_geno <- c(-1L, 1L)
 positions <- purrr::map2(n_loci, L, ~sort(runif(.x, min = 0.0, max = .y)))
 
-f1 <- create_xodat_founder(alleles = c(0L, 1L), L)
-f2 <- create_xodat_founder(alleles = c(2L, 3L), L)
+n_f <- 10L
+f <- lapply(seq_len(n_f), function(i)create_xodat_founder(c(2L*i-1L, 2L*i), L))
+## f1 <- create_xodat_founder(alleles = c(0L, 1L), L)
+## f2 <- create_xodat_founder(alleles = c(2L, 3L), L)
+fg <- replicate(n_f, sim_geno_individual(n_loci, alleles_geno), FALSE)
+## f1 <- create_xodat_founder(alleles = c(0L, 1L), L)
 
-f1g <- sim_geno_individual(n_loci, alleles_geno)
-f2g <- sim_geno_individual(n_loci, alleles_geno)
+## f1g <- sim_geno_individual(n_loci, alleles_geno)
+## f2g <- sim_geno_individual(n_loci, alleles_geno)
 
 cv <- new(Meiosis::Converter, positions)
-cv$insert_founder(c(0L, 1L), f1g)
-cv$insert_founder(c(2L, 3L), f2g)
+for (i in seq_len(n_f)) cv$insert_founder(c(2L*i-1L, 2L*i), fg[[i]])
 
+## cv$insert_founder(c(0L, 1L), f1g)
+## cv$insert_founder(c(2L, 3L), f2g)
+
+cv2 <- new(Meiosis::Converter2, positions)
+for (i in seq_len(n_f)) cv2$insert_founder(c(2L*i-1L, 2L*i), fg[[i]])
+## cv2$insert_founder(c(0L, 1L), f1g)
+## cv2$insert_founder(c(2L, 3L), f2g)
+
+cv3 <- new(Meiosis::Converter3, positions)
+for (i in seq_len(n_f)) cv3$insert_founder(c(2L*i-1L, 2L*i), fg[[i]])
+
+x <- cross_xodat(f[[1]], f[[3]], xodat_param)
 microbenchmark::microbenchmark(times = 1000,
-x <- cross_xodat(f1, f2, xodat_param),
-## cv$convert(x),
-cross_geno(f1g, f2g, positions, xodat_param),
+cv$convert(x),
+cv2$convert(x),
+cv3$convert(x)
+)
+
+all(cv3$convert(x)[[1]][[10]] == cv2$convert(x)[[1]][[10]])
+
+u <- cv2$convert(x)
+str(u, m =2)
+
+
+
+microbenchmark::microbenchmark(times = 100,
+for (i in 1:50) y <- cross_geno(f1g, f2g, positions, xodat_param),
 dh_geno(f1g, positions, xodat_param)
 )
 

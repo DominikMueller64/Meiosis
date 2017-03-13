@@ -4,6 +4,7 @@
 #include <tuple>
 #include <utility>  // std::pair
 #include <random>
+#include <limits>
 #include "globals.hpp"
 #include "crossover.hpp"
 
@@ -17,11 +18,11 @@ namespace meiosis_ns
 
 
     // Template function of simulating meiosis using genotypes.
-    template<typename t_alleles, typename t_locations>
+    template<typename t_alleles, typename t_xlocations, typename t_positions>
     t_alleles meiosis_geno(const t_alleles& patalle,
                            const t_alleles& matalle,
-                           const t_locations& xlocations,
-                           const t_locations& pos,
+                           const t_xlocations& xlocations,
+                           const t_positions& pos,
                            std::mt19937& engine)
     {
       // Draw the parent where to start from.
@@ -39,8 +40,9 @@ namespace meiosis_ns
       }
 
       std::size_t n_loci = pos.size();
-      t_locations xloc(xlocations);
-      xloc.push_back(*(pos.end() - 1) + 1e-6);
+      // t_xlocations xloc(xlocations);
+      vec xloc(xlocations.begin(), xlocations.end());
+      xloc.push_back(*(pos.end() - 1) + std::numeric_limits<double>::epsilon());
       t_alleles alleles(n_loci);
 
       std::size_t ix1 = 0; // first slicing position
@@ -50,11 +52,11 @@ namespace meiosis_ns
         ix2 = it - pos.begin();
         if (cur_allele){
           for (std::size_t i = ix1; i != ix2; ++i) {
-            alleles[i] += patalle[i];
+            alleles[i] = patalle[i];
           }
         } else{
           for (std::size_t i = ix1; i != ix2; ++i) {
-            alleles[i] += matalle[i];
+            alleles[i] = matalle[i];
           }
         }
         cur_allele = !cur_allele; // switch to other chromatid
@@ -66,12 +68,12 @@ namespace meiosis_ns
 
 
   // Template function of simulating meiosis using crossover data.
-    template<typename t_alleles, typename t_locations>
+    template<typename t_alleles, typename t_locations, typename t_xlocations>
     std::pair<t_alleles, t_locations> meiosis_xodat(const t_alleles& patalle,
                                                     const t_locations& patloc,
                                                     const t_alleles& matalle,
                                                     const t_locations& matloc,
-                                                    const t_locations& xlocations,
+                                                    const t_xlocations& xlocations,
                                                     std::mt19937& engine)
     {
       // Draw the parent where to start from.
@@ -82,26 +84,18 @@ namespace meiosis_ns
       if (xlocations.size() == 0) {
         if (cur_allele == 0) {
           return std::make_pair(matalle, matloc);
-          // return maternal;
         }
         else {
           return std::make_pair(patalle, patloc);
-          // return paternal;
         }
       }
 
-      // std::vector<double> tmp(xlocations);
       const std::size_t matloc_size = matloc.size();
       const std::size_t patloc_size = patloc.size();
       const std::size_t product_size = xlocations.size() + 1;
       std::vector<double> product(product_size);
       product[0] = -1.0;
       std::copy(xlocations.begin(), xlocations.end(), product.begin() + 1);
-
-      // This modifies xlocations, which is not desirable
-      // xlocations.insert(xlocations.begin(), -1.0);
-      // const std::size_t product_size = xlocations.size() + 1;
-
 
       const std::size_t biggest_length = product_size + matloc_size + patloc_size;
       std::vector<double> loc(biggest_length);
@@ -188,28 +182,27 @@ namespace meiosis_ns
     }
 
 
-    inline std::vector<int> meiosis_geno_cpp(const std::vector<int>& patalle,
-                                             const std::vector<int>& matalle,
-                                             const std::vector<double>& xlocations,
-                                             const std::vector<double>& pos,
-                                             std::mt19937& engine)
-    {
-      return meiosis_geno<std::vector<int>, std::vector<double> >(patalle, matalle,
-                                                                  xlocations, pos, engine);
-    }
+    // inline std::vector<int> meiosis_geno_cpp(const std::vector<int>& patalle,
+    //                                          const std::vector<int>& matalle,
+    //                                          const std::vector<double>& xlocations,
+    //                                          const std::vector<double>& pos,
+    //                                          std::mt19937& engine)
+    // {
+    //   return meiosis_geno<std::vector<int>,
+    //                       std::vector<double>,
+    //                       std::vector<double> >(patalle, matalle, xlocations, pos, engine);
+    // }
 
 
-    inline std::pair<ivec,vec> meiosis_xodat_cpp(const ivec& patalle,
-                                                 const vec& patloc,
-                                                 const ivec& matalle,
-                                                 const vec& matloc,
-                                                 const vec& xlocations,
-                                                 std::mt19937& engine)
-    {
-      return meiosis_xodat<ivec,vec>(patalle, patloc, matalle, matloc, xlocations, engine);
-    }
-
-
+    // inline std::pair<ivec,vec> meiosis_xodat_cpp(const ivec& patalle,
+    //                                              const vec& patloc,
+    //                                              const ivec& matalle,
+    //                                              const vec& matloc,
+    //                                              const vec& xlocations,
+    //                                              std::mt19937& engine)
+    // {
+    //   return meiosis_xodat<ivec,vec,vec>(patalle, patloc, matalle, matloc, xlocations, engine);
+    // }
 
 } // meiosis_ns
 

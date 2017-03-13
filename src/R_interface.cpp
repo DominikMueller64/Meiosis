@@ -39,9 +39,9 @@ Rcpp::IntegerVector meiosis_geno_(const Rcpp::IntegerVector& patalle,
                                  const double Lstar
                                  )
 {
-  engine.seed(rdev());
-  const auto& xlocations = Meiosis::crossover<Rcpp::NumericVector>(L, m, p, obligate_chiasma, Lstar, engine);
-  return Meiosis::meiosis_geno<Rcpp::IntegerVector, Rcpp::NumericVector>(
+  engine.seed(rdev()); // extremely costly, massive overhead!
+  const auto& xlocations = Meiosis::crossover<std::vector<double>>(L, m, p, obligate_chiasma, Lstar, engine);
+  return Meiosis::meiosis_geno<Rcpp::IntegerVector, std::vector<double>, Rcpp::NumericVector>(
         patalle, matalle, xlocations, pos, engine);
 }
 
@@ -50,17 +50,29 @@ Rcpp::List meiosis_geno(const Rcpp::List& individual,
                         const Rcpp::List& positions,
                         const Rcpp::List& xodat_param)
 {
+  engine.seed(rdev()); // costs about 3 microseconds
   const Rcpp::NumericVector& L = xodat_param[0];
   const int m = xodat_param[1];
   const double p = xodat_param[2];
   const bool obligate_chiasma = xodat_param[3];
   const Rcpp::NumericVector& Lstar = xodat_param[4];
+  const auto& xo = Meiosis::crossover<std::vector<double>>;
+  const auto& mei = Meiosis::meiosis_geno<Rcpp::IntegerVector,
+                                          std::vector<double>,
+                                          Rcpp::NumericVector>;
 
   Rcpp::List gamete(L.size());
+
+  const auto& paternal = Rcpp::as<Rcpp::List>(individual[0]);
+  const auto& maternal = Rcpp::as<Rcpp::List>(individual[1]);
   for (std::size_t i = 0; i != L.size(); ++i){
-    gamete[i] = meiosis_geno_(Rcpp::as<Rcpp::List>(individual[0])[i],
-                              Rcpp::as<Rcpp::List>(individual[1])[i],
-                              positions[i], L[i], m, p, obligate_chiasma, Lstar[i]);
+    // gamete[i] = meiosis_geno_(Rcpp::as<Rcpp::List>(individual[0])[i],
+    //                           Rcpp::as<Rcpp::List>(individual[1])[i],
+    //                           positions[i], L[i], m, p, obligate_chiasma, Lstar[i]);
+    gamete[i] = mei(paternal[i], maternal[i],
+                    xo(L[i], m, p, obligate_chiasma, Lstar[i], engine),
+                    positions[i], engine);
+
   }
   return gamete;
 }
@@ -80,9 +92,11 @@ Rcpp::List meiosis_xodat_(const Rcpp::IntegerVector& patalle,
                          const double Lstar
                          )
 {
-  engine.seed(rdev());
+  engine.seed(rdev()); // costs about 3 microseconds
   const auto& xlocations = Meiosis::crossover<Rcpp::NumericVector>(L, m, p, obligate_chiasma, Lstar, engine);
-  const auto& ret = Meiosis::meiosis_xodat<Rcpp::IntegerVector, Rcpp::NumericVector>(
+  const auto& ret = Meiosis::meiosis_xodat<Rcpp::IntegerVector,
+                                           Rcpp::NumericVector,
+                                           Rcpp::NumericVector>(
        patalle, patloc, matalle, matloc, xlocations, engine);
   return Rcpp::List::create(Rcpp::Named("alleles") = ret.first,
                             Rcpp::Named("locations") = ret.second);
@@ -94,6 +108,7 @@ Rcpp::List meiosis_xodat_(const Rcpp::IntegerVector& patalle,
 Rcpp::List meiosis_xodat(const Rcpp::List& individual,
                          const Rcpp::List& xodat_param)
 {
+  engine.seed(rdev()); // costs about 3 microseconds
   const Rcpp::NumericVector& L = xodat_param[0];
   const int m = xodat_param[1];
   const double p = xodat_param[2];
@@ -102,14 +117,19 @@ Rcpp::List meiosis_xodat(const Rcpp::List& individual,
 
   const Rcpp::List& paternal = individual[0];
   const Rcpp::List& maternal = individual[1];
+
+  const auto& xo = Meiosis::crossover<std::vector<double>>;
+  const auto& mei = Meiosis::meiosis_xodat<Rcpp::IntegerVector,
+                                           Rcpp::NumericVector,
+                                           std::vector<double>>;
   Rcpp::List gamete(L.size());
   for (std::size_t i = 0; i != L.size(); ++i){
     const Rcpp::List& pat = paternal[i];
     const Rcpp::List& mat = maternal[i];
-    gamete[i] = meiosis_xodat_(pat[0], pat[1], mat[0], mat[1], L[i],
-                               m, p, obligate_chiasma, Lstar[i]);
+    const auto& xlocations = xo(L[i], m, p, obligate_chiasma, Lstar[i], engine);
+    const auto& ret = mei(pat[0], pat[1], mat[0], mat[1], xlocations, engine);
+    gamete[i] = Rcpp::List::create(ret.first, ret.second);
   }
-
   return gamete;
 }
 

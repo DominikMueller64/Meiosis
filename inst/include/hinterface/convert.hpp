@@ -1,7 +1,8 @@
+// [[Rcpp::depends(BH)]]
 // [[Rcpp::plugins(cpp11)]]
 #include <Rcpp.h>
 #include <vector>
-#include <unordered_map>
+#include <map>
 #include <algorithm>
 
 #ifndef convert__hpp
@@ -30,19 +31,18 @@ namespace convert_ns
     //   return founder_;
     // }
 
-    template<typename t_alleles, typename t_locations,
-             typename t_positions, typename t_geno>
+    template<typename t_alleles, typename t_locations, typename t_positions>
     inline t_alleles convert(const t_alleles& alleles,
                              const t_locations& locations,
-                             const t_positions& pos,
-                             const std::unordered_map<int, t_geno>& founder)
+                             const t_positions& positions,
+                             const std::map<int, std::vector<int>>& founder)
     {
-      t_alleles out(pos.size());
+      t_alleles out(positions.size());
       std::size_t ix1 = 0;
       std::size_t ix2;
       for (std::size_t j = 0; j < locations.size(); ++j) {
-        auto it = std::upper_bound(pos.begin() + ix1, pos.end(), locations[j]);
-        ix2 = it - pos.begin();
+        auto it = std::upper_bound(positions.begin() + ix1, positions.end(), locations[j]);
+        ix2 = it - positions.begin();
         for (std::size_t i = ix1; i < ix2; ++i) {
           out[i] = founder.at(alleles[j])[i];
         }

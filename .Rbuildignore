@@ -3,3 +3,4 @@
 ^./src/src_ignore$
 
 ^testing.R$
+^\.travis\.yml$
