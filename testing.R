@@ -1,7 +1,9 @@
-library('purrr')
 library('Meiosis')
 
 set.seed(123L)
+
+Meiosis::seed_rng(55)
+Meiosis::crossover(1000, 0, 0, F, 1000)
 
 ## n_loci <- 10000L
 ## L <- 500.0

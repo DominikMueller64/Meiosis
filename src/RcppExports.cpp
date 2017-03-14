@@ -36,6 +36,17 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// seed_rng
+int seed_rng(const Rcpp::Nullable<int>& seed);
+RcppExport SEXP Meiosis_seed_rng(SEXP seedSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const Rcpp::Nullable<int>& >::type seed(seedSEXP);
+    rcpp_result_gen = Rcpp::wrap(seed_rng(seed));
+    return rcpp_result_gen;
+END_RCPP
+}
 // calc_Lstar
 double calc_Lstar(double L, int m, double p, double epsilon);
 RcppExport SEXP Meiosis_calc_Lstar(SEXP LSEXP, SEXP mSEXP, SEXP pSEXP, SEXP epsilonSEXP) {

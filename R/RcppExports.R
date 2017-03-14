@@ -9,6 +9,24 @@ to_matrix <- function(x) {
     .Call('Meiosis_to_matrix', PACKAGE = 'Meiosis', x)
 }
 
+#' Seed the random number generator.
+#'
+#' A Mersenne Twister pseudo-random generator of 32-bit numbers with a state size of
+#' 10037 bits is used (\url{http://www.cplusplus.com/reference/random/mt19937/}).
+#'
+#' @param seed Integer (default = \code{NULL}). If \code{NULL}, a random seed is used.
+#'
+#' @return The used seed.
+#'
+#' @examples
+#' seed_rng(123L)
+#' the_seed <- seed_rng()
+#'
+#' @export
+seed_rng <- function(seed = NULL) {
+    .Call('Meiosis_seed_rng', PACKAGE = 'Meiosis', seed)
+}
+
 calc_Lstar <- function(L, m, p, epsilon) {
     .Call('Meiosis_calc_Lstar', PACKAGE = 'Meiosis', L, m, p, epsilon)
 }

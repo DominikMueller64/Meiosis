@@ -3,12 +3,37 @@
 #include <cstddef>
 #include <set>
 #include <iterator>
+#include <vector>
+#include <tuple>
 #include "Meiosis.h"
-
-#include <array>
 
 std::random_device rdev;
 std::mt19937 engine;
+
+//' Seed the random number generator.
+//'
+//' A Mersenne Twister pseudo-random generator of 32-bit numbers with a state size of
+//' 10037 bits is used (\url{http://www.cplusplus.com/reference/random/mt19937/}).
+//'
+//' @param seed Integer (default = \code{NULL}). If \code{NULL}, a random seed is used.
+//'
+//' @return The used seed.
+//'
+//' @examples
+//' seed_rng(123L)
+//' the_seed <- seed_rng()
+//'
+//' @export
+// [[Rcpp::export]]
+int seed_rng(const Rcpp::Nullable<int>& seed = R_NilValue)
+{
+  int seed_;
+  if (seed.isNotNull()) seed_ = Rcpp::as<int>(seed);
+  else seed_ = rdev();
+  engine.seed(seed_);
+  return seed_;
+}
+
 
 // [[Rcpp::export]]
 double calc_Lstar(double L, int m, double p, double epsilon)
@@ -21,9 +46,9 @@ Rcpp::NumericVector crossover(const double L,
                               const int m,
                               const double p,
                               const bool obligate_chiasma,
-                              const double Lstar)
+                              const double Lstar
+                              )
 {
-  engine.seed(rdev());
   return Meiosis::crossover<Rcpp::NumericVector>(L, m, p, obligate_chiasma, Lstar, engine);
 }
 
@@ -39,7 +64,6 @@ Rcpp::IntegerVector meiosis_geno_(const Rcpp::IntegerVector& patalle,
                                  const double Lstar
                                  )
 {
-  engine.seed(rdev()); // extremely costly, massive overhead!
   const auto& xlocations = Meiosis::crossover<std::vector<double>>(L, m, p, obligate_chiasma, Lstar, engine);
   return Meiosis::meiosis_geno<Rcpp::IntegerVector, std::vector<double>, Rcpp::NumericVector>(
         patalle, matalle, xlocations, pos, engine);
@@ -50,12 +74,11 @@ Rcpp::List meiosis_geno(const Rcpp::List& individual,
                         const Rcpp::List& positions,
                         const Rcpp::List& xodat_param)
 {
-  engine.seed(rdev()); // costs about 3 microseconds
-  const Rcpp::NumericVector& L = xodat_param[0];
-  const int m = xodat_param[1];
-  const double p = xodat_param[2];
-  const bool obligate_chiasma = xodat_param[3];
-  const Rcpp::NumericVector& Lstar = xodat_param[4];
+  const auto& L = Rcpp::as<Rcpp::NumericVector>(xodat_param[0]);
+  const auto& m = Rcpp::as<int>(xodat_param[1]);
+  const auto& p = Rcpp::as<double>(xodat_param[2]);
+  const auto& obligate_chiasma = Rcpp::as<bool>(xodat_param[3]);
+  const auto& Lstar = Rcpp::as<Rcpp::NumericVector>(xodat_param[4]);
   const auto& xo = Meiosis::crossover<std::vector<double>>;
   const auto& mei = Meiosis::meiosis_geno<Rcpp::IntegerVector,
                                           std::vector<double>,
@@ -92,7 +115,6 @@ Rcpp::List meiosis_xodat_(const Rcpp::IntegerVector& patalle,
                          const double Lstar
                          )
 {
-  engine.seed(rdev()); // costs about 3 microseconds
   const auto& xlocations = Meiosis::crossover<Rcpp::NumericVector>(L, m, p, obligate_chiasma, Lstar, engine);
   const auto& ret = Meiosis::meiosis_xodat<Rcpp::IntegerVector,
                                            Rcpp::NumericVector,
@@ -108,13 +130,11 @@ Rcpp::List meiosis_xodat_(const Rcpp::IntegerVector& patalle,
 Rcpp::List meiosis_xodat(const Rcpp::List& individual,
                          const Rcpp::List& xodat_param)
 {
-  engine.seed(rdev()); // costs about 3 microseconds
-  const Rcpp::NumericVector& L = xodat_param[0];
-  const int m = xodat_param[1];
-  const double p = xodat_param[2];
-  const bool obligate_chiasma = xodat_param[3];
-  const Rcpp::NumericVector& Lstar = xodat_param[4];
-
+  const auto& L = Rcpp::as<Rcpp::NumericVector>(xodat_param[0]);
+  const auto& m = Rcpp::as<int>(xodat_param[1]);
+  const auto& p = Rcpp::as<double>(xodat_param[2]);
+  const auto& obligate_chiasma = Rcpp::as<bool>(xodat_param[3]);
+  const auto& Lstar = Rcpp::as<Rcpp::NumericVector>(xodat_param[4]);
   const Rcpp::List& paternal = individual[0];
   const Rcpp::List& maternal = individual[1];
 
@@ -251,7 +271,6 @@ double realized_f(const Rcpp::List& individual) {
 //                                   const double Lstar
 //                                   )
 // {
-//   engine.seed(rdev());
 //   const auto& xlocations = Meiosis::crossover<std::vector<double> >(L, m, p, obligate_chiasma, Lstar, engine);
 //   return Meiosis::meiosis_geno<std::vector<int>, std::vector<double>>(
 //   patalle, matalle, xlocations, pos, engine);
@@ -291,7 +310,6 @@ double realized_f(const Rcpp::List& individual) {
 //                              const double Lstar
 //                              )
 // {
-//   engine.seed(rdev());
 //   const auto& xlocations = Meiosis::crossover<std::vector<double> >(L, m, p, obligate_chiasma, Lstar, engine);
 //   const auto& ret = Meiosis::meiosis_xodat<std::vector<int>, std::vector<double> >(
 //                        patalle, patloc, matalle, matloc, xlocations, engine);
