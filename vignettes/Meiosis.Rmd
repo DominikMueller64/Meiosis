@@ -45,6 +45,7 @@ several examples.
 ## Examples
 The C++ routines use an independent random number generator. For seeding it, do e.g.
 ```{r}
+library('Meiosis')
 set.seed(123L)
 Meiosis::seed_rng(seed = 123L)
 ```
