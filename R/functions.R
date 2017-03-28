@@ -12,13 +12,6 @@ check_locations <- function(x) {
                 "and contain only non-negative elements."))
 }
 
-#' @export
-check_pos <- function(x) {
-  if (!is.list(x)) stop("'pos' must be a list.")
-  for (p in x) check_locations(p)
-}
-
-#' @export
 check_xodat_gamete <- function(x) {
   if (!is.list(x)) stop("'gamete' must be a list.")
   for (a in x) {
@@ -28,6 +21,18 @@ check_xodat_gamete <- function(x) {
   }
 }
 
+#' Check if genetic positions are valid
+#'
+#' @param x Genetic positions to be checked.
+#' @export
+check_pos <- function(x) {
+  if (!is.list(x)) stop("'pos' must be a list.")
+  for (p in x) check_locations(p)
+}
+
+#' Check if crossover-data are valid
+#'
+#' @param x Crossover data to be checked
 #' @export
 check_xodat_individual <- function(x) {
   if (!is.list(x) || length(x) != 2L)

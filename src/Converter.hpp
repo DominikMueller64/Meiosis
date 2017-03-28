@@ -36,13 +36,12 @@ public:
   void insert_gamete(int key, t_gamete gamete);
   void insert_founder(ivec keys, t_geno geno);
 
+  bool check_xodat_individual(const Rcpp::List& ind);
   Rcpp::List convert_gamete(const Rcpp::List& gamete);
   Rcpp::List convert(const Rcpp::List& individual);
 
-  // std::vector<boost::container::map<int, ivec>> mapvec;
   std::vector<std::map<int, ivec>> mapvec;
   // std::vector<std::unordered_map<int, ivec>> mapvec;
-  // t_hashmapvec hashmapvec;
   t_positions positions;
 };
 

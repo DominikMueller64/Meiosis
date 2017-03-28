@@ -32,7 +32,8 @@
 #' chiasma on the four-strand bundle.
 #'
 #' @author Dominik Mueller (\email{dominikmueller64@yahoo.de}),
-#' description mostly by \href{https://github.com/kbroman/simcross}{Karl Broman}).
+#' description mostly taken from the \href{https://github.com/kbroman/simcross}{simcross}
+#' package.
 #'
 #' @seealso \code{\link{calc_Lstar}}
 #'
@@ -49,10 +50,10 @@
 #' \bold{139}, 1045--1056.
 #'
 #' @examples
-#' create_xodat_param(L = c(50.5, 100.1, 133.5))
+#' create_xoparam(L = c(50.5, 100.1, 133.5))
 #'
 #' @export
-create_xodat_param <- function(L, m = 10L, p = 0.0,
+create_xoparam <- function(L, m = 0L, p = 1.0,
                             obligate_chiasma = FALSE) {
 
   if (!is.numeric(p) || p < 0.0 || p > 1.0)

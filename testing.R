@@ -1,9 +1,154 @@
+set.seed(123L)
+## The C++ routines use an independent random number generator. For seeding it, do e.g.
+Meiosis::seed_rng(seed = 123L)
+
+## Example: Create crossover-parameters
+n_chr <- 3L  ## number of chromosomes
+L <- runif(n = n_chr, min = 100, max = 300)  ## sample length of chromosomes in cM
+xoparam <- create_xoparam(L)  ## no interference, no obligate chiasma
+str(xoparam)
+
+## Genotypic data: number of loci per chromosome and positions.
+n_loci <- round(runif(n = n_chr, min = 5L, max = 10L))  ## sample number of loci per chromosome
+## sample positions of loci on the chromosome
+positions <- lapply(seq_len(n_chr), function(i) sort(runif(n_loci[i], min = 0, max = L[i])))
+
+## Example 1: Simulate meiosis with genotypes.
+ind <- replicate(2L, lapply(n_loci, function(n) sample(c(0L, 1L), n, replace = TRUE)),
+                 simplify = FALSE) ## simulate some genotypic data
+str(ind)
+
+p_geno <- Meiosis::cross_geno(father = ind, mother = ind, positions = positions,
+                              xoparam = xoparam)
+str(p_geno)
+
+
+## Example 2: Simulate meiosis with segmental representation.
+f_alleles <- c(21L, 65L)
+f <- Meiosis::create_xo_founder(alleles = f_alleles, L = L)
+
+p_xo <- Meiosis::cross_xo(father = f, mother = f, xoparam = xoparam)
+str(p_xo)
+
+## Create a converter for converting segmental data to genotypic data.
+conv <- new(Meiosis::Converter, positions)
+conv$insert_founder(f_alleles, ind)
+conv$convert(f)
+
+## Example 3: Derive n inbred lines from a bi-parental cross.
+n_self <- 10L  ## number of generations of selfing
+n <- 30L ## number of progeny
+
+## Genotypic representation
+
+## Second individual as parent.
+ind2 <- replicate(2L, lapply(n_loci, function(n) sample(c(0L, 1L), n, replace = TRUE)),
+                  simplify = FALSE) ## simulate some genotypic data
+
+pop <- replicate(n, Meiosis::cross_geno(ind, ind2, positions, xoparam), simplify = FALSE)
+for (i in seq_len(n))
+  for (j in seq_len(n))
+    pop[[i]] <- Meiosis::cross_geno(pop[[i]], pop[[i]], positions, xoparam)
+
+## Segmental representation
+f2 <- create_xo_founder(alleles = c(55L, 77L), L = L)
+pop_xo <- replicate(n, Meiosis::cross_xo(f, f2, xoparam), simplify = FALSE)
+for (i in seq_len(n))
+  for (j in seq_len(n))
+    pop_xo[[i]] <- Meiosis::cross_xo(pop_xo[[i]], pop_xo[[i]], xoparam)
+
+## conv$convert(pop[[1]]) ## error, because genotypic data of second founder not present
+conv$insert_founder(c(55L, 77L), ind2)  ## insert second founder first
+pop_geno <- lapply(pop_xo, conv$convert) ## convert whole population
+
+## Further examples
+
+## Simulate a doubled haploid individual.
+Meiosis::dh_geno(ind, positions, xoparam)
+conv$convert(Meiosis::dh_xo(f, xoparam))
+
+## Calculate realized coefficients of co-ancestry.
+Meiosis::realized_coancestry(f)
+Meiosis::realized_coancestry(p_xo) ## selfing progeny, expected coefficient of coancestry is 0.75.
+Meiosis::realized_coancestry(pop_xo[[1L]], pop_xo[[2L]]) ## realized CoC of two full-sibs.
+
+
+
+
 library('Meiosis')
 
+library('simcross')
+
+x <- rnorm(10)
+x <- c(1, 2, 3, 4, 4)
+Meiosis::is_sorted(x, T, T)
+Meiosis::check_positions(x)
+
+positions <- list(1:10, 1:40)
+conv <- new("Converter", positions)
+?conv$convert
+str(conv)
+conv$.CppClassDef@docstring
+
+methods::promptClass('Converter')
+conv$insert_founder(c(5, 10), list(list(1:10, 1:39), list(1:10, 1:40)))
+
+conv$size()
+conv$test("bla")
+
+conv$getRefClass()
+
+conv$more
+
+conv$.CppObject$size()
+
+cv <- Meiosis::Converter$new()
+cv$more
+cv$doner
+cv$size()
+  cv
+new(Meiosis::Converter)
+Meiosis::Converter()
 set.seed(123L)
 
 Meiosis::seed_rng(55)
-Meiosis::crossover(1000, 0, 0, F, 1000)
+microbenchmark::microbenchmark(times = 1e4L,
+     crossover(100, 100, 0.9, F, 100),
+     sim_crossovers(100, 100, 0.9, F, 100)
+                               )
+u <- Meiosis::Converter()
+u$initialize()
+u$size()
+u$insert_founder()
+
+Meiosis::Converter
+Meiosis::.__C__Rcpp_Converter
+wtf <- Meiosis::genConverter()
+wtf$doner
+wtf$initialize()
+wtf
+new(wtf, positions)
+
+new(Meiosis::Converter)
+new(Meiosis::.__C__Converter)
+new(Meiosis::.__C__Rcpp_Converter)
+
+
+
+
+
+
+
+n_chr <- 10L
+L_ <- 300.0
+m <- 0L
+p <- 0.0
+obligate_chiasma <- FALSE
+L <- rep(x = L_, times = n_chr)
+## Lstar <- purrr::map_dbl(.x = L, .f = ~Meiosis::calc_Lstar(.x, m, p, 1e-6))
+
+n_loci <- rep(x = 10000L, times = n_chr)
+
 
 ## n_loci <- 10000L
 ## L <- 500.0
@@ -33,6 +178,8 @@ sim_geno_individual <- function(n_loci, alleles) {
   purrr::rerun(2L, purrr::map(n_loci, ~sample(x = alleles, size = .x, replace = TRUE)))
 }
 
+
+library("Meiosis")
 
 n_chr <- 10L
 L_ <- 300.0
@@ -71,11 +218,19 @@ for (i in seq_len(n_f)) cv2$insert_founder(c(2L*i-1L, 2L*i), fg[[i]])
 cv3 <- new(Meiosis::Converter3, positions)
 for (i in seq_len(n_f)) cv3$insert_founder(c(2L*i-1L, 2L*i), fg[[i]])
 
-x <- cross_xodat(f[[1]], f[[3]], xodat_param)
+x <- cross_xodat(f[[1]], f[[2]], xodat_param)
+
+x[[1]][[1]][[1]] <- c(1,2,1,2,1)
+microbenchmark::microbenchmark(times = 1000,
+                               cv$convert(x, TRUE),
+                               cv$convert(x, FALSE),
+                               )
+str(u, m =2)
+
 microbenchmark::microbenchmark(times = 1000,
 cv$convert(x),
 cv2$convert(x),
-cv3$convert(x)
+cv3$convert(x),
 )
 
 all(cv3$convert(x)[[1]][[10]] == cv2$convert(x)[[1]][[10]])

@@ -1,14 +1,18 @@
 Package: Meiosis
 Type: Package
-Title: What the Package Does in One 'Title Case' Line
-Version: 1.0
+Title: Simulation of meiosis events for diploids.
+Version: 1.0.0
 Date: 2017-02-13
-Author: Your Name
-Maintainer: Your Name <your@email.com>
-Description: One paragraph description of what the package does as one
-        or more full sentences.
+Author: Dominik Mueller
+Maintainer: Dominik Mueller <dominikmueller64@yahoo.de>
+Description: This packages provides tools for the simulation of meiosis events in diploid
+             species.
 License: GPL (>= 2)
-Imports: methods, Rcpp (>= 0.12.9)
+Imports: methods, Rcpp (>= 0.12.9),
+    utils
 LinkingTo: Rcpp, BH
 SystemRequirements: C++11
 RoxygenNote: 6.0.1
+Suggests: knitr,
+    rmarkdown
+VignetteBuilder: knitr

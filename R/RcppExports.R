@@ -9,70 +9,54 @@ to_matrix <- function(x) {
     .Call('Meiosis_to_matrix', PACKAGE = 'Meiosis', x)
 }
 
-#' Seed the random number generator.
-#'
-#' A Mersenne Twister pseudo-random generator of 32-bit numbers with a state size of
-#' 10037 bits is used (\url{http://www.cplusplus.com/reference/random/mt19937/}).
-#'
-#' @param seed Integer (default = \code{NULL}). If \code{NULL}, a random seed is used.
-#'
-#' @return The used seed.
-#'
-#' @examples
-#' seed_rng(123L)
-#' the_seed <- seed_rng()
-#'
-#' @export
+#' @rdname seed_rng
 seed_rng <- function(seed = NULL) {
     .Call('Meiosis_seed_rng', PACKAGE = 'Meiosis', seed)
 }
 
-calc_Lstar <- function(L, m, p, epsilon) {
+#' @rdname calc_Lstar
+calc_Lstar <- function(L, m, p, epsilon = NULL) {
     .Call('Meiosis_calc_Lstar', PACKAGE = 'Meiosis', L, m, p, epsilon)
 }
 
+#' @rdname crossover
 crossover <- function(L, m, p, obligate_chiasma, Lstar) {
     .Call('Meiosis_crossover', PACKAGE = 'Meiosis', L, m, p, obligate_chiasma, Lstar)
 }
 
-meiosis_geno_ <- function(patalle, matalle, pos, L, m, p, obligate_chiasma, Lstar) {
-    .Call('Meiosis_meiosis_geno_', PACKAGE = 'Meiosis', patalle, matalle, pos, L, m, p, obligate_chiasma, Lstar)
+#' @rdname meiosis_geno
+meiosis_geno <- function(individual, positions, xoparam) {
+    .Call('Meiosis_meiosis_geno', PACKAGE = 'Meiosis', individual, positions, xoparam)
 }
 
-meiosis_geno <- function(individual, positions, xodat_param) {
-    .Call('Meiosis_meiosis_geno', PACKAGE = 'Meiosis', individual, positions, xodat_param)
+#' @rdname meiosis_xo
+meiosis_xo <- function(individual, xoparam) {
+    .Call('Meiosis_meiosis_xo', PACKAGE = 'Meiosis', individual, xoparam)
 }
 
-meiosis_xodat_ <- function(patalle, patloc, matalle, matloc, L, m, p, obligate_chiasma, Lstar) {
-    .Call('Meiosis_meiosis_xodat_', PACKAGE = 'Meiosis', patalle, patloc, matalle, matloc, L, m, p, obligate_chiasma, Lstar)
+#' @rdname cross_geno
+cross_geno <- function(father, mother, positions, xoparam) {
+    .Call('Meiosis_cross_geno', PACKAGE = 'Meiosis', father, mother, positions, xoparam)
 }
 
-meiosis_xodat <- function(individual, xodat_param) {
-    .Call('Meiosis_meiosis_xodat', PACKAGE = 'Meiosis', individual, xodat_param)
+#' @rdname cross_xo
+cross_xo <- function(father, mother, xoparam) {
+    .Call('Meiosis_cross_xo', PACKAGE = 'Meiosis', father, mother, xoparam)
 }
 
-cross_geno <- function(father, mother, positions, xodat_param) {
-    .Call('Meiosis_cross_geno', PACKAGE = 'Meiosis', father, mother, positions, xodat_param)
+#' @rdname cross_geno
+dh_geno <- function(individual, positions, xoparam) {
+    .Call('Meiosis_dh_geno', PACKAGE = 'Meiosis', individual, positions, xoparam)
 }
 
-cross_xodat <- function(father, mother, xodat_param) {
-    .Call('Meiosis_cross_xodat', PACKAGE = 'Meiosis', father, mother, xodat_param)
+#' @rdname cross_xo
+dh_xo <- function(individual, xoparam) {
+    .Call('Meiosis_dh_xo', PACKAGE = 'Meiosis', individual, xoparam)
 }
 
-dh_geno <- function(individual, positions, xodat_param) {
-    .Call('Meiosis_dh_geno', PACKAGE = 'Meiosis', individual, positions, xodat_param)
-}
-
-dh_xodat <- function(individual, xodat_param) {
-    .Call('Meiosis_dh_xodat', PACKAGE = 'Meiosis', individual, xodat_param)
-}
-
-realized_ibd <- function(individual_1, individual_2) {
-    .Call('Meiosis_realized_ibd', PACKAGE = 'Meiosis', individual_1, individual_2)
-}
-
-realized_f <- function(individual) {
-    .Call('Meiosis_realized_f', PACKAGE = 'Meiosis', individual)
+#' @rdname realized_coancestry
+realized_coancestry <- function(individual_1, individual_2 = NULL) {
+    .Call('Meiosis_realized_coancestry', PACKAGE = 'Meiosis', individual_1, individual_2)
 }
 
 meiosis_xodat_test_R <- function(patalle, patloc, matalle, matloc, L, m, p, obligate_chiasma, Lstar) {

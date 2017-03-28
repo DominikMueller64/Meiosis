@@ -6,6 +6,7 @@
 #include <Rcpp.h>
 #include <vector>
 #include <limits>
+#include <cmath>
 #include <boost/math/tools/roots.hpp>
 
 namespace calc_Lstar_ns {
@@ -55,7 +56,8 @@ namespace calc_Lstar_ns {
     }
   };
 
-  inline double calc_Lstar(double L, int m, double p, double epsilon)
+  inline double calc_Lstar(double L, int m, double p,
+                           double epsilon = std::sqrt(std::numeric_limits<double>::epsilon()))
   {
 
     if (L <= 50) {

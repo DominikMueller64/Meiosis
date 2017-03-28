@@ -6,31 +6,142 @@
 #include <cstdlib>
 #include <numeric>
 #include <utility> // std::make_pair()
+#include <algorithm>
+#include <functional>
+#include <cstdio>
 #include "Meiosis.h"
 #include "Converter.hpp"
 
-Converter::Converter(t_positions positions): positions(positions){}
+
+
+// Rcpp::List Converter::convert_gamete(const Rcpp::List& gamete)
+// {
+//   const auto& f = Meiosis::convert<Rcpp::IntegerVector, Rcpp::NumericVector, vec>;
+//   Rcpp::List new_gam(gamete.size());
+//   for (size_t k = 0; k != gamete.size(); ++k) {
+//     const Rcpp::List& chr = gamete[k];
+//     new_gam[k] = f(chr[0], chr[1], positions[k], mapvec[k]);
+//   }
+//   return new_gam;
+// }
+
+// Rcpp::List Converter::convert(const Rcpp::List& individual)
+// {
+//   const auto& n_gam = individual.size();
+//   Rcpp::List new_ind(n_gam);
+//   for (size_t g = 0; g != n_gam; ++g) {
+//     new_ind[g] = convert_gamete(individual[g]);
+//   }
+//   return new_ind;
+// }
+
+template<typename T>
+bool is_sorted(const T& x,
+               const bool increasing = true,
+               const bool strict = true)
+{
+  std::function<bool(double, double)> comp;
+  if (increasing) {
+    if (strict) {
+      comp = std::less_equal<double>();
+    } else {
+      comp = std::less<double>();
+    }
+  } else {
+    if (strict) {
+      comp = std::greater_equal<double>();
+    }
+    else {
+      comp = std::greater<double>();
+    }
+  }
+  return std::is_sorted(x.begin(), x.end(), comp);
+}
+
+
+template<typename T>
+bool check_positions(const T& x)
+{
+  return *x.begin() >= 0.0 && is_sorted(x, true, true);
+}
+
+
+Converter::Converter(t_positions positions){
+
+  for (const auto& pos: positions) {
+    if (!check_positions<std::vector<double> >(pos)) {
+      throw std::runtime_error("Some positions are not as requested. "
+                               "(non-zero and strictly increasing)");
+    }
+  }
+
+  this->positions = positions;
+}
+
+
+bool Converter::check_xodat_individual(const Rcpp::List& ind) {
+
+  const std::size_t n_chr = positions.size();
+
+  if (ind.size() != 2)
+    throw std::runtime_error("An individual must be diploid (contain two gametes).");
+
+  for (std::size_t j = 0; j < ind.size(); ++j) {
+    const Rcpp::List& gam = ind[j];
+    if (gam.size() != n_chr)
+      throw std::runtime_error("The individual has an incorrect number of chromosomes.");
+
+    for (std::size_t i = 0; i < n_chr; ++i) {
+      const Rcpp::List& chr = gam[i];
+      const Rcpp::IntegerVector& alleles = chr[0];
+      const Rcpp::NumericVector& locations = chr[1];
+
+      if (!check_positions<Rcpp::NumericVector>(locations))
+        throw std::runtime_error("'locations' must be increasingly sorted (strictly).");
+
+      if (locations.size() != alleles.size())
+        throw std::runtime_error("'alleles' and 'locations' must always have the same length.");
+    }
+  }
+  return true;
+}
+
 
 
 std::size_t Converter::size(){return mapvec.size();}
 
 void Converter::insert_founder(ivec keys, t_geno geno)
 {
-  insert_gamete(keys[0], geno[0]);
-  insert_gamete(keys[1], geno[1]);
-}
+  std::size_t n_gametes = keys.size();
+  if (n_gametes != geno.size()) {
+    const auto msg = "The number of keys must be equal to the number of gametes";
+    throw std::runtime_error(msg);
+  }
 
+  for (std::size_t i = 0; i < n_gametes; ++i) insert_gamete(keys[i], geno[i]);
+}
 
 void Converter::insert_gamete(int key, t_gamete gamete)
 {
+  if (gamete.size() != positions.size()) {
+    const auto msg = "Length of a gamete does not match "
+                     "the number of chromosomes";
+    throw std::runtime_error(msg);
+  }
+
+  for (std::size_t i = 0; i < positions.size(); ++i) {
+    if (positions[i].size() != gamete[i].size()) {
+      const auto msg = "Length of a chromosome of a gamete does not match "
+                       "the number of its genetic map positions.";
+      throw std::runtime_error(msg);
+    }
+  }
 
   if (mapvec.empty()) { // still empty
     const auto& n_chr = gamete.size();
     mapvec.reserve(n_chr); // reserve memory
     for (const auto& v: gamete) {
-      // boost::container::map<int, ivec> map;
       std::map<int, ivec> map;
-      // t_hashmap map; // instantiate new hashmap
       map[key] = v; // insert first element
       mapvec.push_back(map); // add to vector of hashmaps
     }
@@ -60,6 +171,8 @@ Rcpp::List Converter::convert_gamete(const Rcpp::List& gamete)
 
 Rcpp::List Converter::convert(const Rcpp::List& individual)
 {
+  check_xodat_individual(individual);
+
   const auto& n_gam = individual.size();
   Rcpp::List new_ind(n_gam);
   for (size_t g = 0; g != n_gam; ++g) {

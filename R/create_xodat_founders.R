@@ -7,17 +7,17 @@
 #' @return A nested list. The first level refers to gametes, the second
 #' to chromosomes.
 #'
-#' @seealso \code{\link{cross_xodat}}, \code{\link{meiosis_xodat}}
+#' @seealso \code{\link{cross_xo}}, \code{\link{meiosis_xo}}
 #'
 #' @author Dominik Mueller (\email{dominikmueller64@yahoo.de})
 #'
 #' @examples
-#' create_xodat_founder(alleles = c(-5L, 54L), L = c(32.2, 65.3, 88.2))
+#' create_xo_founder(alleles = c(-5L, 54L), L = c(32.2, 65.3, 88.2))
 #'
 #' @export
-create_xodat_founder <- function(alleles, L) {
+create_xo_founder <- function(alleles, L) {
 
-  create_xodat_gamete <- function(allele, L) {
+  create_xo_gamete <- function(allele, L) {
     L <- as.numeric(L)
     allele <- as.integer(allele)
     if (!is.vector(L) || !is.numeric(L) || any(L <= 0.0))
@@ -32,6 +32,6 @@ create_xodat_founder <- function(alleles, L) {
   if (length(alleles) != 2L)
     stop("'alleles' must have length 2.")
 
-  lapply(X = alleles, FUN = function(allele) create_xodat_gamete(allele, L))
+  lapply(X = alleles, FUN = function(allele) create_xo_gamete(allele, L))
 }
 
