@@ -8,4 +8,4 @@
 ^\.travis\.yml$
 ^doxygen.config$
 ^.gitignore$
-^cran-comments$
+^cran-comments.md$
