@@ -17,3 +17,11 @@ meiosis_geno(individual, positions, xoparam)
 \value{
 List. A new gamete.
 }
+\description{
+Simulation of meiosis events.
+}
+\examples{
+data(exdat, package = 'Meiosis')
+Meiosis::meiosis_geno(exdat$ind, exdat$positions, exdat$xoparam)
+
+}

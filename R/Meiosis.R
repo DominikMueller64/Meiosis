@@ -9,7 +9,7 @@ NULL
 #' @name seed_rng
 #' @title Seed the random number generator.
 #'
-#' A Mersenne Twister pseudo-random generator of 32-bit numbers with a state size of
+#' @description A Mersenne Twister pseudo-random generator of 32-bit numbers with a state size of
 #' 10037 bits is used.
 #'
 #' @param seed Integer (default = \code{NULL}). If \code{NULL}, a random seed is used.
@@ -29,7 +29,7 @@ NULL
 #' @name calc_Lstar
 #' @title Calculate adjusted chromosome length for obligate chiasma
 #'
-#' @details This function is an R-wrapper of an underlying C++ routine.
+#' @description This function is an R-wrapper of an underlying C++ routine.
 #' It is not intended for direct usage, but exposed for completeness.
 #'
 #' Calculate the reduced chromosome length that will give the target
@@ -44,11 +44,6 @@ NULL
 #'
 #' @return Double. Adjusted chromosome length.
 #'
-#'
-#' @author Orginal R function: Karl Broman, C++ routine: Dominik Mueller.
-#'
-#' @seealso \code{\link[simcross]{calc_Lstar}}
-#'
 #' @examples
 #' calc_Lstar(100, 0, 0)
 #' calc_Lstar(60, 10, 0.1)
@@ -59,7 +54,7 @@ NULL
 #' @name crossover
 #' @title Simulate crossover locations.
 #'
-#' @details This function is an R-wrapper of an underlying C++ routine.
+#' @description This function is an R-wrapper of an underlying C++ routine.
 #' It is not intended for direct usage, but exposed for completeness.
 #'
 #' @param L Double. Length of the chromosome in cM. Must be > 50.
@@ -70,8 +65,6 @@ NULL
 #'
 #' @return Numeric Vector. Crossover locations.
 #'
-#' @seealso \code{\link[simcross]{sim_crossover}}
-#'
 #' @examples
 #' crossover(300, 10, 0.5, FALSE, 300)
 #'
@@ -80,6 +73,8 @@ NULL
 
 #' @name meiosis_geno
 #' @title Simulate meiosis (genotypic representation)
+#'
+#' @description Simulation of meiosis events.
 #'
 #' @param individual List. Individual.
 #' @param positions List. Genetic positions.
@@ -97,6 +92,8 @@ NULL
 
 #' @name cross_geno
 #' @title Cross individuals (genotypic representation)
+#'
+#' @description Simulation of a cross.
 #'
 #' @param father List. Father.
 #' @param mother List. Father.
@@ -116,6 +113,8 @@ NULL
 #' @name dh_geno
 #' @title Produce doubled haploid (genotypic representation)
 #'
+#' @description Simulation of a doubled haploid.
+#'
 #' @param individual List. Individual.
 #' @param positions List. Genetic positions.
 #' @param xoparam List. Crossover parameters.
@@ -132,6 +131,8 @@ NULL
 #' @name meiosis_xo
 #' @title Simulate meiosis (segmental representation)
 #'
+#' @description Simulation of meiosis events.
+#'
 #' @param individual List. Individual.
 #' @param xoparam List. Crossover parameters.
 #'
@@ -147,6 +148,8 @@ NULL
 
 #' @name cross_xo
 #' @title Cross individuals (segmental representation)
+#'
+#' @description Simulation of a cross.
 #'
 #' @param father List. Father.
 #' @param mother List. Father.
@@ -165,8 +168,9 @@ NULL
 #' @name dh_xo
 #' @title Produce doubled haploid (segmental representation)
 #'
+#' @description Simulation of a doubled haploid.
+#'
 #' @param individual List. Individual.
-#' @param positions List. Genetic positions.
 #' @param xoparam List. Crossover parameters.
 #'
 #' @return List. A new individual.
@@ -179,7 +183,9 @@ NULL
 NULL
 
 #' @name realized_coancestry
-#' @title Compute the realized coefficient of co-ancestry between two individuals.
+#' @title Compute co-ancestry
+#'
+#' @description Compute the realized coefficient of co-ancestry between two individuals.
 #'
 #' @param individual_1 List. A first Individual.
 #' @param individual_2 List. A second Individual. If \code{NULL}, self-relationship of
@@ -200,11 +206,11 @@ NULL
 NULL
 
 #' @name exdat
+#' @title Example data
+#'
+#' @description Example data for illustrating the functions in Meiosis.
+#'
 #' @docType data
-#' Example data
-#'
-#' Example data for illustrating the functions in Meiosis.
-#'
 #' @format A list with 6 items
 #' \describe{
 #'   \item{xoparam}{List with crossover parameters}
@@ -214,6 +220,5 @@ NULL
 #'   \item{founder}{Segmental data of an individual}
 #'   \item{founder2}{Segmental data of another individual}
 #' }
-#'
 #' For details on the data structures, see \code{vignette('Meiosis', package = 'Meiosis')}.
 "exdat"

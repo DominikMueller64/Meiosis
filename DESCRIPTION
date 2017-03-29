@@ -1,6 +1,6 @@
 Package: Meiosis
 Type: Package
-Title: Simulation of meiosis events for diploids.
+Title: Simulation of meiosis events for diploids
 Version: 1.0.0
 Date: 2017-02-13
 Author: Dominik Mueller
@@ -8,6 +8,7 @@ Maintainer: Dominik Mueller <dominikmueller64@yahoo.de>
 Description: This packages provides tools for the simulation of meiosis events in diploid
              species.
 License: GPL (>= 2)
+Depends: R (>= 3.3.2)
 Imports: methods, Rcpp (>= 0.12.9),
     utils
 LinkingTo: Rcpp, BH

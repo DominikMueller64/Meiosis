@@ -21,14 +21,11 @@ crossover(L, m, p, obligate_chiasma, Lstar)
 \value{
 Numeric Vector. Crossover locations.
 }
-\details{
+\description{
 This function is an R-wrapper of an underlying C++ routine.
 It is not intended for direct usage, but exposed for completeness.
 }
 \examples{
 crossover(300, 10, 0.5, FALSE, 300)
 
-}
-\seealso{
-\code{\link[simcross]{sim_crossover}}
 }

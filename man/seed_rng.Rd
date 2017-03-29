@@ -3,10 +3,7 @@
 \name{seed_rng}
 \alias{seed_rng}
 \alias{seed_rng}
-\title{Seed the random number generator.
-
-A Mersenne Twister pseudo-random generator of 32-bit numbers with a state size of
-10037 bits is used.}
+\title{Seed the random number generator.}
 \usage{
 seed_rng(seed = NULL)
 }
@@ -15,6 +12,10 @@ seed_rng(seed = NULL)
 }
 \value{
 Integer. The used seed.
+}
+\description{
+A Mersenne Twister pseudo-random generator of 32-bit numbers with a state size of
+10037 bits is used.
 }
 \examples{
 seed_rng(123L)

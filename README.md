@@ -59,6 +59,15 @@ vignette('Meiosis', package = 'Meiosis')
 
 ---
 
+### Acknowledgements
+
+Parts of the core functionality of this package were adapted from the package
+[simcross](https://github.com/kbroman/simcross) of [Karl Broman](http://kbroman.org/).
+
+---
+
+---
+
 ### Author
 
 Dominik Mueller

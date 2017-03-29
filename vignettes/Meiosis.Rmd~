@@ -95,9 +95,9 @@ We now show how to do the same as in Example 1 with data in the segmental
 representation. Here, we first have to create one or multiple founder
 individuals. Each founder individual has two (distinct!) founder alleles. These
 founder allels are represented by arbitrary but unique integers. Think about
-these founder allels as simple "tags" that are attached to chromosomal segments.
+these founder allels as simple tags that are attached to chromosomal segments.
 As these segments are "dropped down" the pedigree and sometimes altered by a
-recombination event, the "tags" always guarantee that each chunk of the genome can
+recombination event, the tags always guarantee that each chunk of the genome can
 be unambiguously assigned to one of the founder indivdiuals. A founder
 individual is created with the function `create_xo_founder`, which accepts as
 parameters the integer labels and a vector that specifies the length of each

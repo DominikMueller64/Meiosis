@@ -44,12 +44,12 @@ cross_xo <- function(father, mother, xoparam) {
     .Call('Meiosis_cross_xo', PACKAGE = 'Meiosis', father, mother, xoparam)
 }
 
-#' @rdname cross_geno
+#' @rdname dh_geno
 dh_geno <- function(individual, positions, xoparam) {
     .Call('Meiosis_dh_geno', PACKAGE = 'Meiosis', individual, positions, xoparam)
 }
 
-#' @rdname cross_xo
+#' @rdname dh_xo
 dh_xo <- function(individual, xoparam) {
     .Call('Meiosis_dh_xo', PACKAGE = 'Meiosis', individual, xoparam)
 }

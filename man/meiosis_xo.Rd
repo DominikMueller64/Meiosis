@@ -11,9 +11,15 @@ meiosis_xo(individual, xoparam)
 \item{individual}{List. Individual.}
 
 \item{xoparam}{List. Crossover parameters.}
-
-\item{positions}{List. Genetic positions.}
 }
 \value{
 List. A new gamete.
+}
+\description{
+Simulation of meiosis events.
+}
+\examples{
+data(exdat, package = 'Meiosis')
+Meiosis::meiosis_xo(exdat$founder, exdat$xoparam)
+
 }

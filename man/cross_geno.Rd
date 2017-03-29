@@ -3,12 +3,9 @@
 \name{cross_geno}
 \alias{cross_geno}
 \alias{cross_geno}
-\alias{dh_geno}
 \title{Cross individuals (genotypic representation)}
 \usage{
 cross_geno(father, mother, positions, xoparam)
-
-dh_geno(individual, positions, xoparam)
 }
 \arguments{
 \item{father}{List. Father.}
@@ -21,4 +18,12 @@ dh_geno(individual, positions, xoparam)
 }
 \value{
 List. A new individual.
+}
+\description{
+Simulation of a cross.
+}
+\examples{
+data(exdat, package = 'Meiosis')
+Meiosis::cross_geno(exdat$ind, exdat$ind2, exdat$positions, exdat$xoparam)
+
 }

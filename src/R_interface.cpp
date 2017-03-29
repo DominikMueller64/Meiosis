@@ -177,7 +177,7 @@ Rcpp::List cross_xo(const Rcpp::List& father,
 }
 
 
-//' @rdname cross_geno
+//' @rdname dh_geno
 // [[Rcpp::export]]
 Rcpp::List dh_geno(const Rcpp::List& individual,
                    const Rcpp::List& positions,
@@ -190,7 +190,7 @@ Rcpp::List dh_geno(const Rcpp::List& individual,
 }
 
 
-//' @rdname cross_xo
+//' @rdname dh_xo
 // [[Rcpp::export]]
 Rcpp::List dh_xo(const Rcpp::List& individual,
                     const Rcpp::List& xoparam)

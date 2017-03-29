@@ -3,12 +3,9 @@
 \name{cross_xo}
 \alias{cross_xo}
 \alias{cross_xo}
-\alias{dh_xo}
 \title{Cross individuals (segmental representation)}
 \usage{
 cross_xo(father, mother, xoparam)
-
-dh_xo(individual, xoparam)
 }
 \arguments{
 \item{father}{List. Father.}
@@ -16,9 +13,15 @@ dh_xo(individual, xoparam)
 \item{mother}{List. Father.}
 
 \item{xoparam}{List. Crossover parameters.}
-
-\item{positions}{List. Genetic positions.}
 }
 \value{
 List. A new individual.
+}
+\description{
+Simulation of a cross.
+}
+\examples{
+data(exdat, package = 'Meiosis')
+Meiosis::cross_xo(exdat$founder, exdat$founder2, exdat$xoparam)
+
 }

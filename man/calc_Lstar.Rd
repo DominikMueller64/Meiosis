@@ -20,7 +20,7 @@ Defaults to \code{NULL}, where a "high" precision is used.}
 \value{
 Double. Adjusted chromosome length.
 }
-\details{
+\description{
 This function is an R-wrapper of an underlying C++ routine.
 It is not intended for direct usage, but exposed for completeness.
 
@@ -32,10 +32,4 @@ least one chiasma on the four-strand bundle.
 calc_Lstar(100, 0, 0)
 calc_Lstar(60, 10, 0.1)
 
-}
-\seealso{
-\code{\link[simcross]{calc_Lstar}}
-}
-\author{
-Orginal R function: Karl Broman, C++ routine: Dominik Mueller.
 }

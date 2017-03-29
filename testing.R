@@ -35,7 +35,10 @@ str(p_xo)
 conv <- new(Meiosis::Converter, positions)
 conv$insert_founder(f_alleles, ind)
 conv$convert(f)
+conv$convert(f)
 
+conv
+?Meiosis::Converter
 ## Example 3: Derive n inbred lines from a bi-parental cross.
 n_self <- 10L  ## number of generations of selfing
 n <- 30L ## number of progeny

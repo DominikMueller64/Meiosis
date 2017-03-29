@@ -3,7 +3,7 @@
 \name{realized_coancestry}
 \alias{realized_coancestry}
 \alias{realized_coancestry}
-\title{Compute the realized coefficient of co-ancestry between two individuals.}
+\title{Compute co-ancestry}
 \usage{
 realized_coancestry(individual_1, individual_2 = NULL)
 }
@@ -16,8 +16,17 @@ realized_coancestry(individual_1, individual_2 = NULL)
 \value{
 double. Realized coefficient of co-ancestry.
 }
+\description{
+Compute the realized coefficient of co-ancestry between two individuals.
+}
 \details{
 The realized coefficient of co-ancestry is (herein) defined as the probability
 that two alleles randomly drawn from one of the homologous chromosomes, each from one of the
 individuals, are identical-by-descent (as specified by origins of founder alleles).
+}
+\examples{
+data(exdat, package = 'Meiosis')
+Meiosis::realized_coancestry(Meiosis::dh_xo(exdat$founder, exdat$xoparam),
+                             Meiosis::dh_xo(exdat$founder, exdat$xoparam))
+
 }
