@@ -15,7 +15,7 @@ You first need to install the [devtools](https://github.com/hadley/devtools) pac
 install.packages("devtools")
 ```
 
-Then install bcgvr with 
+Then install Meiosis with 
 
 ```r
 devtools::install_github("DominikMueller64/Meiosis")
@@ -61,10 +61,8 @@ vignette('Meiosis', package = 'Meiosis')
 
 ### Acknowledgements
 
-Parts of the core functionality of this package were adapted from the package
+Parts of the core functionality and documentation of this package were adapted from the package
 [simcross](https://github.com/kbroman/simcross) of [Karl Broman](http://kbroman.org/).
-
----
 
 ---
 
