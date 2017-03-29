@@ -87,6 +87,10 @@ NULL
 #'
 #' @return List. A new gamete.
 #'
+#' @examples
+#' data(exdat, package = 'Meiosis')
+#' Meiosis::meiosis_geno(exdat$ind, exdat$positions, exdat$xoparam)
+#'
 #' @export
 NULL
 
@@ -101,6 +105,10 @@ NULL
 #'
 #' @return List. A new individual.
 #'
+#' @examples
+#' data(exdat, package = 'Meiosis')
+#' Meiosis::cross_geno(exdat$ind, exdat$ind2, exdat$positions, exdat$xoparam)
+#'
 #' @export
 NULL
 
@@ -114,6 +122,10 @@ NULL
 #'
 #' @return List. A new individual.
 #'
+#' @examples
+#' data(exdat, package = 'Meiosis')
+#' Meiosis::dh_geno(exdat$ind, exdat$positions, exdat$xoparam)
+#'
 #' @export
 NULL
 
@@ -121,10 +133,13 @@ NULL
 #' @title Simulate meiosis (segmental representation)
 #'
 #' @param individual List. Individual.
-#' @param positions List. Genetic positions.
 #' @param xoparam List. Crossover parameters.
 #'
 #' @return List. A new gamete.
+#'
+#' @examples
+#' data(exdat, package = 'Meiosis')
+#' Meiosis::meiosis_xo(exdat$founder, exdat$xoparam)
 #'
 #' @export
 NULL
@@ -135,10 +150,13 @@ NULL
 #'
 #' @param father List. Father.
 #' @param mother List. Father.
-#' @param positions List. Genetic positions.
 #' @param xoparam List. Crossover parameters.
 #'
 #' @return List. A new individual.
+#'
+#' @examples
+#' data(exdat, package = 'Meiosis')
+#' Meiosis::cross_xo(exdat$founder, exdat$founder2, exdat$xoparam)
 #'
 #' @export
 NULL
@@ -152,6 +170,10 @@ NULL
 #' @param xoparam List. Crossover parameters.
 #'
 #' @return List. A new individual.
+#'
+#' @examples
+#' data(exdat, package = 'Meiosis')
+#' Meiosis::dh_xo(exdat$founder, exdat$xoparam)
 #'
 #' @export
 NULL
@@ -169,5 +191,29 @@ NULL
 #' that two alleles randomly drawn from one of the homologous chromosomes, each from one of the
 #' individuals, are identical-by-descent (as specified by origins of founder alleles).
 #'
+#' @examples
+#' data(exdat, package = 'Meiosis')
+#' Meiosis::realized_coancestry(Meiosis::dh_xo(exdat$founder, exdat$xoparam),
+#'                              Meiosis::dh_xo(exdat$founder, exdat$xoparam))
+#'
 #' @export
 NULL
+
+#' @name exdat
+#' @docType data
+#' Example data
+#'
+#' Example data for illustrating the functions in Meiosis.
+#'
+#' @format A list with 6 items
+#' \describe{
+#'   \item{xoparam}{List with crossover parameters}
+#'   \item{positions}{Genetic positions of loci}
+#'   \item{ind}{Genotypic data of an individual}
+#'   \item{ind2}{Genotypic data of another individual}
+#'   \item{founder}{Segmental data of an individual}
+#'   \item{founder2}{Segmental data of another individual}
+#' }
+#'
+#' For details on the data structures, see \code{vignette('Meiosis', package = 'Meiosis')}.
+"exdat"
