@@ -1,6 +1,12 @@
 # R for travis: see documentation at https://docs.travis-ci.com/user/languages/r
 
-language: R
+language: r
+r:
+  - 3.3.2
+  - 3.3.3
+  - release
+  - devel
 sudo: false
 cache: packages
-warnings_are_errors: false
+warnings_are_errors: true
+disable_homebrew: true # Useful to test if the package builds on a vanilla OS X machine.

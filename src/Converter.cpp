@@ -10,7 +10,7 @@
 #include <functional>
 #include <cstdio>
 #include "Meiosis.h"
-#include "Converter.hpp"
+#include "../inst/include/Converter.hpp"
 
 
 
@@ -199,141 +199,141 @@ Rcpp::List Converter::convert(const Rcpp::List& individual)
 // bool Converter::empty(){return obj.empty();}
 // void Converter::clear(){obj.clear();}
 
-// Converter 2
+// // Converter 2
 
-Rcpp::IntegerVector conv(const Rcpp::IntegerVector& alleles,
-                         const Rcpp::NumericVector& locations,
-                         const std::vector<double>& pos,
-                         const std::map<int, std::size_t>& map,
-                         const std::vector<std::vector<int>>& mat)
-{
-  Rcpp::IntegerVector out(pos.size());
-  std::size_t ix1 = 0;
-  std::size_t ix2;
-  for (std::size_t j = 0; j < locations.size(); ++j) {
-    auto it = std::upper_bound(pos.begin() + ix1, pos.end(), locations[j]);
-    ix2 = it - pos.begin();
-    for (std::size_t i = ix1; i < ix2; ++i) {
-      out[i] = mat[map.at(alleles[j])][i];
-    }
-    ix1 = ix2;
-  }
-  return out;
-}
-
-
-Converter2::Converter2(t_positions positions):
-  positions(positions), counter(0){
-  const auto n_chr = positions.size();
-  // std::vector<int> n_loci;
-  // n_loci.resize(n_chr);
-  // for (const auto& p: positions) n_loci.push_back(p.size());
-  matvec = std::vector<std::vector<std::vector<int>>>(n_chr); // initialize with n_chr chrom.
-}
-
-void Converter2::insert_gamete(int key, t_gamete gamete)
-{
-  if (map.find(key) != map.end())
-    Rcpp::stop("Founder allele(s) already registered.");
-
-  map[key] = counter++;
-  for (std::size_t i{0}; i != gamete.size(); ++i)
-    matvec[i].push_back(gamete[i]);
-}
-
-void Converter2::insert_founder(std::vector<int> keys, t_geno geno)
-{
-  insert_gamete(keys[0], geno[0]);
-  insert_gamete(keys[1], geno[1]);
-}
+// Rcpp::IntegerVector conv(const Rcpp::IntegerVector& alleles,
+//                          const Rcpp::NumericVector& locations,
+//                          const std::vector<double>& pos,
+//                          const std::map<int, std::size_t>& map,
+//                          const std::vector<std::vector<int>>& mat)
+// {
+//   Rcpp::IntegerVector out(pos.size());
+//   std::size_t ix1 = 0;
+//   std::size_t ix2;
+//   for (std::size_t j = 0; j < locations.size(); ++j) {
+//     auto it = std::upper_bound(pos.begin() + ix1, pos.end(), locations[j]);
+//     ix2 = it - pos.begin();
+//     for (std::size_t i = ix1; i < ix2; ++i) {
+//       out[i] = mat[map.at(alleles[j])][i];
+//     }
+//     ix1 = ix2;
+//   }
+//   return out;
+// }
 
 
+// Converter2::Converter2(t_positions positions):
+//   positions(positions), counter(0){
+//   const auto n_chr = positions.size();
+//   // std::vector<int> n_loci;
+//   // n_loci.resize(n_chr);
+//   // for (const auto& p: positions) n_loci.push_back(p.size());
+//   matvec = std::vector<std::vector<std::vector<int>>>(n_chr); // initialize with n_chr chrom.
+// }
 
-Rcpp::List Converter2::convert_gamete(const Rcpp::List& gamete)
-{
-  Rcpp::List new_gam(gamete.size());
-  for (size_t k = 0; k != gamete.size(); ++k) {
-    const Rcpp::List& chr = gamete[k];
-    new_gam[k] = conv(chr[0], chr[1], positions[k], map, matvec[k]);
-  }
-  return new_gam;
-}
+// void Converter2::insert_gamete(int key, t_gamete gamete)
+// {
+//   if (map.find(key) != map.end())
+//     Rcpp::stop("Founder allele(s) already registered.");
 
-Rcpp::List Converter2::convert(const Rcpp::List& individual)
-{
-  const auto& n_gam = individual.size();
-  Rcpp::List new_ind(n_gam);
-  for (size_t g = 0; g != n_gam; ++g) {
-    new_ind[g] = convert_gamete(individual[g]);
-  }
-  return new_ind;
-}
+//   map[key] = counter++;
+//   for (std::size_t i{0}; i != gamete.size(); ++i)
+//     matvec[i].push_back(gamete[i]);
+// }
+
+// void Converter2::insert_founder(std::vector<int> keys, t_geno geno)
+// {
+//   insert_gamete(keys[0], geno[0]);
+//   insert_gamete(keys[1], geno[1]);
+// }
 
 
 
-// Converter 3
+// Rcpp::List Converter2::convert_gamete(const Rcpp::List& gamete)
+// {
+//   Rcpp::List new_gam(gamete.size());
+//   for (size_t k = 0; k != gamete.size(); ++k) {
+//     const Rcpp::List& chr = gamete[k];
+//     new_gam[k] = conv(chr[0], chr[1], positions[k], map, matvec[k]);
+//   }
+//   return new_gam;
+// }
 
-Rcpp::IntegerVector conv3(const Rcpp::IntegerVector& alleles,
-                         const Rcpp::NumericVector& locations,
-                         const std::vector<double>& pos,
-                         const std::map<int, std::size_t>& map,
-                         const std::vector<int>& allvec)
-{
-  Rcpp::IntegerVector out(pos.size());
-  std::size_t ix1 = 0;
-  std::size_t ix2;
-  std::size_t n = pos.size();
-  for (std::size_t j = 0; j < locations.size(); ++j) {
-    auto it = std::upper_bound(pos.begin() + ix1, pos.end(), locations[j]);
-    ix2 = it - pos.begin();
-    for (std::size_t i = ix1; i < ix2; ++i) {
-      out[i] = allvec[map.at(alleles[j]) * n + i];
-    }
-    ix1 = ix2;
-  }
-  return out;
-}
+// Rcpp::List Converter2::convert(const Rcpp::List& individual)
+// {
+//   const auto& n_gam = individual.size();
+//   Rcpp::List new_ind(n_gam);
+//   for (size_t g = 0; g != n_gam; ++g) {
+//     new_ind[g] = convert_gamete(individual[g]);
+//   }
+//   return new_ind;
+// }
 
 
-Converter3::Converter3(t_positions positions):
-  positions(positions), counter(0){
-  const auto n_chr = positions.size();
-  allvec = std::vector<std::vector<int>>(n_chr); // initialize with n_chr chrom.
-}
 
-void Converter3::insert_gamete(int key, t_gamete gamete)
-{
-  if (map.find(key) != map.end())
-    Rcpp::stop("Founder allele(s) already registered.");
+// // Converter 3
 
-  map[key] = counter++;
-  for (std::size_t i{0}; i != gamete.size(); ++i)
-    allvec[i].insert(allvec[i].end(), gamete[i].begin(), gamete[i].end());
-}
+// Rcpp::IntegerVector conv3(const Rcpp::IntegerVector& alleles,
+//                          const Rcpp::NumericVector& locations,
+//                          const std::vector<double>& pos,
+//                          const std::map<int, std::size_t>& map,
+//                          const std::vector<int>& allvec)
+// {
+//   Rcpp::IntegerVector out(pos.size());
+//   std::size_t ix1 = 0;
+//   std::size_t ix2;
+//   std::size_t n = pos.size();
+//   for (std::size_t j = 0; j < locations.size(); ++j) {
+//     auto it = std::upper_bound(pos.begin() + ix1, pos.end(), locations[j]);
+//     ix2 = it - pos.begin();
+//     for (std::size_t i = ix1; i < ix2; ++i) {
+//       out[i] = allvec[map.at(alleles[j]) * n + i];
+//     }
+//     ix1 = ix2;
+//   }
+//   return out;
+// }
 
-void Converter3::insert_founder(std::vector<int> keys, t_geno geno)
-{
-  insert_gamete(keys[0], geno[0]);
-  insert_gamete(keys[1], geno[1]);
-}
 
-Rcpp::List Converter3::convert_gamete(const Rcpp::List& gamete)
-{
-  Rcpp::List new_gam(gamete.size());
-  for (size_t k = 0; k != gamete.size(); ++k) {
-    const Rcpp::List& chr = gamete[k];
-    new_gam[k] = conv3(chr[0], chr[1], positions[k], map, allvec[k]);
-  }
-  return new_gam;
-}
+// Converter3::Converter3(t_positions positions):
+//   positions(positions), counter(0){
+//   const auto n_chr = positions.size();
+//   allvec = std::vector<std::vector<int>>(n_chr); // initialize with n_chr chrom.
+// }
 
-Rcpp::List Converter3::convert(const Rcpp::List& individual)
-{
-  const auto& n_gam = individual.size();
-  Rcpp::List new_ind(n_gam);
-  for (size_t g = 0; g != n_gam; ++g) {
-    new_ind[g] = convert_gamete(individual[g]);
-  }
-  return new_ind;
-}
+// void Converter3::insert_gamete(int key, t_gamete gamete)
+// {
+//   if (map.find(key) != map.end())
+//     Rcpp::stop("Founder allele(s) already registered.");
+
+//   map[key] = counter++;
+//   for (std::size_t i{0}; i != gamete.size(); ++i)
+//     allvec[i].insert(allvec[i].end(), gamete[i].begin(), gamete[i].end());
+// }
+
+// void Converter3::insert_founder(std::vector<int> keys, t_geno geno)
+// {
+//   insert_gamete(keys[0], geno[0]);
+//   insert_gamete(keys[1], geno[1]);
+// }
+
+// Rcpp::List Converter3::convert_gamete(const Rcpp::List& gamete)
+// {
+//   Rcpp::List new_gam(gamete.size());
+//   for (size_t k = 0; k != gamete.size(); ++k) {
+//     const Rcpp::List& chr = gamete[k];
+//     new_gam[k] = conv3(chr[0], chr[1], positions[k], map, allvec[k]);
+//   }
+//   return new_gam;
+// }
+
+// Rcpp::List Converter3::convert(const Rcpp::List& individual)
+// {
+//   const auto& n_gam = individual.size();
+//   Rcpp::List new_ind(n_gam);
+//   for (size_t g = 0; g != n_gam; ++g) {
+//     new_ind[g] = convert_gamete(individual[g]);
+//   }
+//   return new_ind;
+// }
 

@@ -1,6 +1,7 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
-^./src/src_ignore$
+^./src/helper.cpp$
+^./src/bcgv.cpp$
 ^./.git
 
 ^testing.R$

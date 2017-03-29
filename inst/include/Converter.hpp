@@ -46,44 +46,44 @@ public:
 };
 
 
-typedef std::vector<std::vector<std::vector<int>>> t_matvec;
-typedef std::map<int, std::size_t> t_map;
+// typedef std::vector<std::vector<std::vector<int>>> t_matvec;
+// typedef std::map<int, std::size_t> t_map;
 
-class Converter2
-{
-public:
-  Converter2(t_positions positions);
-
-
-  void insert_gamete(int key, t_gamete gamete);
-  void insert_founder(std::vector<int> keys, t_geno geno);
-
-  Rcpp::List convert_gamete(const Rcpp::List& gamete);
-  Rcpp::List convert(const Rcpp::List& individual);
-
-  t_matvec matvec;
-  t_map map;
-  t_positions positions;
-  std::size_t counter;
-};
+// class Converter2
+// {
+// public:
+//   Converter2(t_positions positions);
 
 
-class Converter3
-{
-public:
-  Converter3(t_positions positions);
+//   void insert_gamete(int key, t_gamete gamete);
+//   void insert_founder(std::vector<int> keys, t_geno geno);
+
+//   Rcpp::List convert_gamete(const Rcpp::List& gamete);
+//   Rcpp::List convert(const Rcpp::List& individual);
+
+//   t_matvec matvec;
+//   t_map map;
+//   t_positions positions;
+//   std::size_t counter;
+// };
 
 
-  void insert_gamete(int key, t_gamete gamete);
-  void insert_founder(std::vector<int> keys, t_geno geno);
+// class Converter3
+// {
+// public:
+//   Converter3(t_positions positions);
 
-  Rcpp::List convert_gamete(const Rcpp::List& gamete);
-  Rcpp::List convert(const Rcpp::List& individual);
 
-  std::vector<std::vector<int>> allvec;
-  t_map map;
-  t_positions positions;
-  std::size_t counter;
-};
+//   void insert_gamete(int key, t_gamete gamete);
+//   void insert_founder(std::vector<int> keys, t_geno geno);
+
+//   Rcpp::List convert_gamete(const Rcpp::List& gamete);
+//   Rcpp::List convert(const Rcpp::List& individual);
+
+//   std::vector<std::vector<int>> allvec;
+//   t_map map;
+//   t_positions positions;
+//   std::size_t counter;
+// };
 
 #endif
