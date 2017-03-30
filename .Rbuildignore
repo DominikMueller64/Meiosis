@@ -9,3 +9,4 @@
 ^doxygen.config$
 ^.gitignore$
 ^cran-comments.md$
+^codecov\.yml$

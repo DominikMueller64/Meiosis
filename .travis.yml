@@ -9,3 +9,5 @@ sudo: false
 cache: packages
 warnings_are_errors: true
 disable_homebrew: true # Useful to test if the package builds on a vanilla OS X machine.
+after_success:
+  - Rscript -e 'covr::codecov()'

@@ -20,6 +20,8 @@ check_xo_gamete <- function(x) {
     if (!is.list(a)) stop("Each element of 'gamete' must be itself a list.")
     check_alleles(a[[1L]])
     check_locations(a[[2L]])
+    if (length(a[[1L]]) != length(a[[2L]]))
+      stop("Alleles and locations must have the same length.")
   }
   return(TRUE)
 }
@@ -47,8 +49,8 @@ check_positions <- function(x) {
 #' @param x List. Individual
 #' @export
 check_xo_individual <- function(x) {
-  if (!is.list(x) || length(x) != 2L)
-    stop("An individuals must be a 'list' of length two (two gametes).")
+  if (!is.list(x) || length(x) != 2L || length(unique(vapply(X = x, length, 1L))) != 1L)
+    stop("An individual must be a list of two gametes with the same length.")
   for (g in x) check_xo_gamete(g)
   return(TRUE)
 }
@@ -59,10 +61,11 @@ check_xo_individual <- function(x) {
 #' @param x List. Individual
 #' @export
 check_geno_individual <- function(x) {
-  if (!is.list(x) || length(x) != 2L)
-    stop("An individuals must be a 'list' of length two (two gametes).")
+  if (!is.list(x) || length(x) != 2L || length(unique(vapply(X = x, length, 1L))) != 1L)
+    stop("An individual must be a list of two gametes with the same length.")
   for (g in x) check_geno_gamete(g)
   return(TRUE)
 }
+
 
 

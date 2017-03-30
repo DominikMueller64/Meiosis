@@ -1,6 +1,8 @@
 Meiosis
 ======
 [![Travis-CI Build Status](https://travis-ci.org/DominikMueller64/Meiosis.svg?branch=master)](https://travis-ci.org/DominikMueller64/Meiosis)
+[![Coverage Status](https://img.shields.io/codecov/c/github/DominikMueller64/Meiosis/master.svg)](https://codecov.io/github/DominikMueller64/Meiosis?branch=master
+[![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/Meiosis)](https://cran.r-project.org/package=Meiosis)
 
 Meiosis is an [R](http://www.r-project.org) package for the simulation of meiosis events.
 
