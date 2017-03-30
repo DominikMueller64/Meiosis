@@ -142,6 +142,7 @@ NULL
 #' @description Simulation of a selfing.
 #'
 #' @param individual List. Individual.
+#' @param positions List. Genetic positions.
 #' @param xoparam List. Crossover parameters.
 #'
 #' @return List. A new individual.
@@ -278,7 +279,7 @@ NULL
 #'
 #' @examples
 #' data(exdat, package = 'Meiosis')
-#' Meiosis::realized_heter(Meiosis::cross_xo(exdat$founder, exdat$founder, exdat$xoparam)
+#' Meiosis::realized_heter(Meiosis::cross_xo(exdat$founder, exdat$founder, exdat$xoparam))
 #'
 #' @export
 NULL

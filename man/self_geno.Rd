@@ -10,6 +10,8 @@ self_geno(individual, positions, xoparam)
 \arguments{
 \item{individual}{List. Individual.}
 
+\item{positions}{List. Genetic positions.}
+
 \item{xoparam}{List. Crossover parameters.}
 }
 \value{

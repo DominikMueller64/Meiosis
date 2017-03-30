@@ -19,6 +19,6 @@ the genome where founder alleles match.
 }
 \examples{
 data(exdat, package = 'Meiosis')
-Meiosis::realized_heter(Meiosis::cross_xo(exdat$founder, exdat$founder, exdat$xoparam)
+Meiosis::realized_heter(Meiosis::cross_xo(exdat$founder, exdat$founder, exdat$xoparam))
 
 }
