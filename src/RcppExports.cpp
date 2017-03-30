@@ -128,6 +128,31 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// self_geno
+Rcpp::List self_geno(const Rcpp::List& individual, const Rcpp::List& positions, const Rcpp::List& xoparam);
+RcppExport SEXP Meiosis_self_geno(SEXP individualSEXP, SEXP positionsSEXP, SEXP xoparamSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const Rcpp::List& >::type individual(individualSEXP);
+    Rcpp::traits::input_parameter< const Rcpp::List& >::type positions(positionsSEXP);
+    Rcpp::traits::input_parameter< const Rcpp::List& >::type xoparam(xoparamSEXP);
+    rcpp_result_gen = Rcpp::wrap(self_geno(individual, positions, xoparam));
+    return rcpp_result_gen;
+END_RCPP
+}
+// self_xo
+Rcpp::List self_xo(const Rcpp::List& individual, const Rcpp::List& xoparam);
+RcppExport SEXP Meiosis_self_xo(SEXP individualSEXP, SEXP xoparamSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const Rcpp::List& >::type individual(individualSEXP);
+    Rcpp::traits::input_parameter< const Rcpp::List& >::type xoparam(xoparamSEXP);
+    rcpp_result_gen = Rcpp::wrap(self_xo(individual, xoparam));
+    return rcpp_result_gen;
+END_RCPP
+}
 // dh_geno
 Rcpp::List dh_geno(const Rcpp::List& individual, const Rcpp::List& positions, const Rcpp::List& xoparam);
 RcppExport SEXP Meiosis_dh_geno(SEXP individualSEXP, SEXP positionsSEXP, SEXP xoparamSEXP) {
@@ -150,6 +175,17 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< const Rcpp::List& >::type individual(individualSEXP);
     Rcpp::traits::input_parameter< const Rcpp::List& >::type xoparam(xoparamSEXP);
     rcpp_result_gen = Rcpp::wrap(dh_xo(individual, xoparam));
+    return rcpp_result_gen;
+END_RCPP
+}
+// realized_heter
+double realized_heter(const Rcpp::List& individual);
+RcppExport SEXP Meiosis_realized_heter(SEXP individualSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const Rcpp::List& >::type individual(individualSEXP);
+    rcpp_result_gen = Rcpp::wrap(realized_heter(individual));
     return rcpp_result_gen;
 END_RCPP
 }

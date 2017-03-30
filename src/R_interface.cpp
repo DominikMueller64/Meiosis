@@ -153,8 +153,6 @@ Rcpp::List cross_geno(const Rcpp::List& father,
                       const Rcpp::List& positions,
                       const Rcpp::List& xoparam)
 {
-  // const auto& pat = meiosis_geno(father, pos, L, m, p, obligate_chiasma, Lstar);
-  // const auto& mat = meiosis_geno(mother, pos, L, m, p, obligate_chiasma, Lstar);
   const auto& pat = meiosis_geno(father, positions, xoparam);
   const auto& mat = meiosis_geno(mother, positions, xoparam);
   return Rcpp::List::create(Rcpp::Named("paternal") = pat,
@@ -168,12 +166,28 @@ Rcpp::List cross_xo(const Rcpp::List& father,
                        const Rcpp::List& mother,
                        const Rcpp::List& xoparam)
 {
-  // const auto& pat = meiosis_xo(father, L, m, p, obligate_chiasma, Lstar);
-  // const auto& mat = meiosis_xo(mother, L, m, p, obligate_chiasma, Lstar);
   const auto& pat = meiosis_xo(father, xoparam);
   const auto& mat = meiosis_xo(mother, xoparam);
   return Rcpp::List::create(Rcpp::Named("paternal") = pat,
                             Rcpp::Named("maternal") = mat);
+}
+
+//' @rdname self_geno
+// [[Rcpp::export]]
+Rcpp::List self_geno(const Rcpp::List& individual,
+                     const Rcpp::List& positions,
+                     const Rcpp::List& xoparam)
+{
+  return cross_geno(individual, individual, positions, xoparam);
+}
+
+
+//' @rdname self_xo
+// [[Rcpp::export]]
+Rcpp::List self_xo(const Rcpp::List& individual,
+                   const Rcpp::List& xoparam)
+{
+  return cross_xo(individual, individual, xoparam);
 }
 
 
@@ -183,7 +197,6 @@ Rcpp::List dh_geno(const Rcpp::List& individual,
                    const Rcpp::List& positions,
                    const Rcpp::List& xoparam)
 {
-  // const auto& gam = meiosis_geno(individual, pos, L, m, p, obligate_chiasma, Lstar);
   const auto& gam = meiosis_geno(individual, positions, xoparam);
   return Rcpp::List::create(Rcpp::Named("paternal") = gam,
                             Rcpp::Named("maternal") = gam);
@@ -195,7 +208,6 @@ Rcpp::List dh_geno(const Rcpp::List& individual,
 Rcpp::List dh_xo(const Rcpp::List& individual,
                     const Rcpp::List& xoparam)
 {
-  // const auto& gam = meiosis_xo(individual, L, m, p, obligate_chiasma, Lstar);
   const auto& gam = meiosis_xo(individual, xoparam);
   return Rcpp::List::create(Rcpp::Named("paternal") = gam,
                             Rcpp::Named("maternal") = gam);
@@ -220,6 +232,12 @@ double realized_coancestry_self(const Rcpp::List& individual) {
     tot += f(pat_i[0], pat_i[1], mat_i[0], mat_i[1]);
   }
   return 0.5 * (1 + tot / len);
+}
+
+//' @rdname realized_heter
+// [[Rcpp::export]]
+double realized_heter(const Rcpp::List& individual) {
+  return 2 * (1 - realized_coancestry_self(individual));
 }
 
 //' @rdname realized_coancestry

@@ -136,6 +136,23 @@ NULL
 #' @export
 NULL
 
+#' @name self_geno
+#' @title Produce selfing (genotypic representation)
+#'
+#' @description Simulation of a selfing.
+#'
+#' @param individual List. Individual.
+#' @param xoparam List. Crossover parameters.
+#'
+#' @return List. A new individual.
+#'
+#' @examples
+#' data(exdat, package = 'Meiosis')
+#' Meiosis::self_geno(exdat$ind, exdat$positions, exdat$xoparam)
+#'
+#' @export
+NULL
+
 
 #' @name dh_geno
 #' @title Produce doubled haploid (genotypic representation)
@@ -191,6 +208,23 @@ NULL
 #' @export
 NULL
 
+#' @name self_xo
+#' @title Produce selfing (segmental representation)
+#'
+#' @description Simulation of a selfing.
+#'
+#' @param individual List. Individual.
+#' @param xoparam List. Crossover parameters.
+#'
+#' @return List. A new individual.
+#'
+#' @examples
+#' data(exdat, package = 'Meiosis')
+#' Meiosis::self_xo(exdat$founder, exdat$xoparam)
+#'
+#' @export
+NULL
+
 
 #' @name dh_xo
 #' @title Produce doubled haploid (segmental representation)
@@ -228,6 +262,23 @@ NULL
 #' data(exdat, package = 'Meiosis')
 #' Meiosis::realized_coancestry(Meiosis::dh_xo(exdat$founder, exdat$xoparam),
 #'                              Meiosis::dh_xo(exdat$founder, exdat$xoparam))
+#'
+#' @export
+NULL
+
+#' @name realized_heter
+#' @title Compute realized heterozygosity.
+#'
+#' @description Compute the realized heterozygosity of an individual, i.e., the proportion of
+#' the genome where founder alleles match.
+#'
+#' @param individual List. Individual.
+#'
+#' @return double. Realized heterozygosity.
+#'
+#' @examples
+#' data(exdat, package = 'Meiosis')
+#' Meiosis::realized_heter(Meiosis::cross_xo(exdat$founder, exdat$founder, exdat$xoparam)
 #'
 #' @export
 NULL

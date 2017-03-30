@@ -44,6 +44,16 @@ cross_xo <- function(father, mother, xoparam) {
     .Call('Meiosis_cross_xo', PACKAGE = 'Meiosis', father, mother, xoparam)
 }
 
+#' @rdname self_geno
+self_geno <- function(individual, positions, xoparam) {
+    .Call('Meiosis_self_geno', PACKAGE = 'Meiosis', individual, positions, xoparam)
+}
+
+#' @rdname self_xo
+self_xo <- function(individual, xoparam) {
+    .Call('Meiosis_self_xo', PACKAGE = 'Meiosis', individual, xoparam)
+}
+
 #' @rdname dh_geno
 dh_geno <- function(individual, positions, xoparam) {
     .Call('Meiosis_dh_geno', PACKAGE = 'Meiosis', individual, positions, xoparam)
@@ -52,6 +62,11 @@ dh_geno <- function(individual, positions, xoparam) {
 #' @rdname dh_xo
 dh_xo <- function(individual, xoparam) {
     .Call('Meiosis_dh_xo', PACKAGE = 'Meiosis', individual, xoparam)
+}
+
+#' @rdname realized_heter
+realized_heter <- function(individual) {
+    .Call('Meiosis_realized_heter', PACKAGE = 'Meiosis', individual)
 }
 
 #' @rdname realized_coancestry

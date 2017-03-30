@@ -18,10 +18,7 @@ A Mersenne Twister pseudo-random generator of 32-bit numbers with a state size o
 10037 bits is used.
 }
 \examples{
-seed_rng(123L)
-the_seed <- seed_rng()
+Meiosis::seed_rng(123L)
+the_seed <- Meiosis::seed_rng()
 
-}
-\seealso{
-\url{http://www.cplusplus.com/reference/random/mt19937/}
 }

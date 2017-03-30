@@ -29,7 +29,7 @@ expected number of chiasmata when conditioning on there being at
 least one chiasma on the four-strand bundle.
 }
 \examples{
-calc_Lstar(100, 0, 0)
-calc_Lstar(60, 10, 0.1)
+Meiosis::calc_Lstar(100, 0, 0)
+Meiosis::calc_Lstar(60, 10, 0.1)
 
 }

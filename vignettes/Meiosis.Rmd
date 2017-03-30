@@ -157,6 +157,9 @@ for (i in seq_len(n_self))
 conv$insert_founder(c(55L, 77L), ind2)  ## insert second founder first
 pop_geno <- lapply(pop_xo, conv$convert) ## convert whole population
 ```
+Alternatively, we could have used the functions `Meiosis::self_geno` and `Meiosis::self_xo`,
+which are wrappers around `Meiosis::cross_geno` and `Meiosis::cross_xo`, for producing the
+selfings.
 
 ### Further examples
 We can also produce a doubled haploid progeny, both from the "segmental" and the "genotypic"
@@ -176,3 +179,10 @@ Meiosis::realized_coancestry(f)
 Meiosis::realized_coancestry(p_xo) ## selfing progeny, expected coefficient is 0.75.
 Meiosis::realized_coancestry(pop_xo[[1L]], pop_xo[[2L]]) ## realized co-ancestry of two full-sibs.
 ```
+
+We can also compute the realized heterozygosity of an individual, i.e., the proportion of
+the genome that is heterozygous with respect to the founder alleles present.
+
+```{r}
+## Calculate realized heterozygosity.
+Meiosis::realized_heter(p_xo) 

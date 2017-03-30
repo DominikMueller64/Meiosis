@@ -22,10 +22,42 @@ crossover(L, m, p, obligate_chiasma, Lstar)
 Numeric Vector. Crossover locations.
 }
 \description{
+Simulate crossover locations on a single meiotic product using the
+Stahl model.
+}
+\details{
+Chiasma locations are a superposition of two
+processes: a proportion p exhibiting no interference, and a
+proportion (1-p) following the chi-square model with interference
+parameter m.  Crossover locations are derived by thinning the
+chiasma locations with probability 1/2.
+
+Simulations are under the Stahl model with the
+interference parameter being an integer. This is an extension of
+the chi-square model, but with chiasmata being the superposition of
+two processes, one following the chi-square model and the other
+exhibiting no interference.
+
 This function is an R-wrapper of an underlying C++ routine.
 It is not intended for direct usage, but exposed for completeness.
 }
 \examples{
-crossover(300, 10, 0.5, FALSE, 300)
+Meiosis::crossover(300, 10, 0.5, FALSE, 300)
 
+}
+\references{
+Copenhaver, G. P., Housworth, E. A. and Stahl, F. W. (2002) Crossover
+interference in arabidopsis.  \emph{Genetics} \bold{160}, 1631--1639.
+
+Foss, E., Lande, R., Stahl, F. W. and Steinberg, C. M. (1993) Chiasma
+interference as a function of genetic distance. \emph{Genetics}
+\bold{133}, 681--691.
+
+Zhao, H., Speed, T. P. and McPeek, M. S. (1995) Statistical analysis
+of crossover interference using the chi-square model.  \emph{Genetics}
+\bold{139}, 1045--1056.
+}
+\author{
+Dominik Mueller \email{dominikmueller64@yahoo.de} and
+Karl W Broman, \email{kbroman@biostat.wisc.edu}
 }

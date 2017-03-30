@@ -1,3 +1,4 @@
+library(Meiosis)
 set.seed(123L)
 ## The C++ routines use an independent random number generator. For seeding it, do e.g.
 Meiosis::seed_rng(seed = 123L)
@@ -75,14 +76,7 @@ conv$convert(Meiosis::dh_xo(f, xoparam))
 Meiosis::realized_coancestry(f)
 Meiosis::realized_coancestry(p_xo) ## selfing progeny, expected coefficient of coancestry is 0.75.
 Meiosis::realized_coancestry(pop_xo[[1L]], pop_xo[[2L]]) ## realized CoC of two full-sibs.
-
-exdat <- list(xoparam = xoparam,
-              positions = positions,
-              ind = ind,
-              ind2 = ind2,
-              founder = f,
-              founder2 = f2)
-devtools::use_data(exdat)
+mean(replicate(10000L, realized_heter(self_xo(self_xo(x, xoparam), xoparam))))
 
 library('Meiosis')
 
