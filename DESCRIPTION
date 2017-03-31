@@ -1,6 +1,6 @@
 Package: Meiosis
 Type: Package
-Title: Simulation of meiosis in plant breeding research
+Title: Simulation of Meiosis in Plant Breeding Research
 Version: 1.0.0
 Date: 2017-02-13
 Authors@R: c(

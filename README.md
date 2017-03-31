@@ -4,8 +4,9 @@ Meiosis: Simulation of meiosis in plant breeding research
 [![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/Meiosis)](https://cran.r-project.org/package=Meiosis)
 [![Coverage Status](https://img.shields.io/codecov/c/github/DominikMueller64/Meiosis/master.svg)](https://codecov.io/github/DominikMueller64/Meiosis?branch=master)
 
-**Meiosis** is a lean [R](http://www.r-project.org) for the simulation of meiosis events in
-diploid (or allopolyploid) plant species for genetic research in plant breeding.
+**Meiosis** is a lean [R](http://www.r-project.org) package for the simulation
+of meiosis events in diploid (or allo-polyploid) plant species for genetic
+research in plant breeding.
 
 ---
 

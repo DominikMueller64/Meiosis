@@ -5,7 +5,8 @@ author:
                    Seed Science and Population Genetics, Stuttgart]
 date: "`r Sys.Date()`"
 output:
-  pdf_document:
+  rmarkdown::html_vignette:
+  #pdf_document:
     toc: true
     toc_depth: 2
 fontsize: 12pt
