@@ -4,7 +4,7 @@
 \name{Meiosis}
 \alias{Meiosis}
 \alias{Meiosis-package}
-\title{Meiosis: A package for the simulation of meiosis events in diploids.}
+\title{Meiosis: Simulation of meiosis in plant breeding research}
 \description{
-This packages provides tools for the simulation of meiosis events in diploid species.
+This packages provides tools for the simulation of meiosis in plant breeding research.
 }

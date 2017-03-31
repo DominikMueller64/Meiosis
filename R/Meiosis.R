@@ -1,6 +1,6 @@
-#' Meiosis: A package for the simulation of meiosis events in diploids.
+#' Meiosis: Simulation of meiosis in plant breeding research
 #'
-#' This packages provides tools for the simulation of meiosis events in diploid species.
+#' This packages provides tools for the simulation of meiosis in plant breeding research.
 #'
 #' @docType package
 #' @name Meiosis

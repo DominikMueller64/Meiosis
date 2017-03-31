@@ -1,10 +1,11 @@
-Meiosis
+Meiosis: Simulation of meiosis in plant breeding research
 ======
 [![Travis-CI Build Status](https://travis-ci.org/DominikMueller64/Meiosis.svg?branch=master)](https://travis-ci.org/DominikMueller64/Meiosis)
-[![Coverage Status](https://img.shields.io/codecov/c/github/DominikMueller64/Meiosis/master.svg)](https://codecov.io/github/DominikMueller64/Meiosis?branch=master
 [![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/Meiosis)](https://cran.r-project.org/package=Meiosis)
+[![Coverage Status](https://img.shields.io/codecov/c/github/DominikMueller64/Meiosis/master.svg)](https://codecov.io/github/DominikMueller64/Meiosis?branch=master)
 
-Meiosis is an [R](http://www.r-project.org) package for the simulation of meiosis events.
+**Meiosis** is a lean [R](http://www.r-project.org) for the simulation of meiosis events in
+diploid (or allopolyploid) plant species for genetic research in plant breeding.
 
 ---
 
@@ -20,7 +21,7 @@ install.packages("devtools")
 Then install Meiosis with 
 
 ```r
-devtools::install_github("DominikMueller64/Meiosis")
+devtools::install_github("DominikMueller64/Meiosis", build_vignettes = TRUE)
 ```
 
 Windows users need to make sure that [Rtools](https://cran.r-project.org/bin/windows/Rtools/)
@@ -45,6 +46,7 @@ xoparam <- Meiosis::create_xoparam(L)
 
 Meiosis::meiosis_geno(ind, positions, xoparam) ## Simulate a new gamete
 Meiosis::cross_geno(ind, ind, positions, xoparam) ## Simulate a new individual
+Meiosis::self_geno(ind, positions, xoparam) ## Simulate a new selfing
 Meiosis::dh_geno(ind, positions, xoparam) ## Simulate a new doubled haploid
 ```
 
@@ -53,7 +55,7 @@ Meiosis::dh_geno(ind, positions, xoparam) ## Simulate a new doubled haploid
 ### Vignette
 
 A vignette describing the functionality of the package and the data structures
-is available from within R. Load the package and then use the vignette function.
+is available from within R. 
 
 ```r
 vignette('Meiosis', package = 'Meiosis')
@@ -63,8 +65,10 @@ vignette('Meiosis', package = 'Meiosis')
 
 ### Acknowledgements
 
-Parts of the core functionality and documentation of this package were adapted from the package
-[simcross](https://github.com/kbroman/simcross) of [Karl Broman](http://kbroman.org/).
+Parts of the core functionality and documentation of **Meiosis** was inspired and
+adapted, respectively, from the package
+[simcross](https://github.com/kbroman/simcross) of [Karl
+Broman](http://kbroman.org/).
 
 ---
 

@@ -10,3 +10,4 @@
 ^.gitignore$
 ^cran-comments.md$
 ^codecov\.yml$
+^pnrrs.R$

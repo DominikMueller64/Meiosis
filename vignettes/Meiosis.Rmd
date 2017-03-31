@@ -1,53 +1,201 @@
 ---
-title: "Meiosis: A package for simulating meiosis events."
-author: "Dominik Mueller"
+title: "Meiosis: Simulation of meiosis in plant breeding research."
+author:
+- Dominik Mueller^[University of Hohenheim, Institute of Plant Breeding,
+                   Seed Science and Population Genetics, Stuttgart]
 date: "`r Sys.Date()`"
-output: rmarkdown::html_vignette
+output:
+  pdf_document:
+    toc: true
+    toc_depth: 2
+fontsize: 12pt
+geometry: margin=1in
 vignette: >
   %\VignetteIndexEntry{Vignette Title}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
+header-includes:
+    - \usepackage{setspace}\doublespacing
 ---
 
-## Introduction
-This vignette describes how to use the R-package Meiosis for simulating meiosis
-events in diploid individuals. In general an individual is a list containing two
-gametes. A gamete is itself a list of chromosomes. There are two representations
-of chromosomes. In the first, "genotypic" representation, a chromosome is
-basically an integer vector containing identifiers for alleles. In the
-bi-allelic case, this can be 0 and 1, representing a gene content of one of the
-alleles. The other representation, is called "segmental" and is described in
-Cheng et al. (2015)^[[XSim](https://doi.org/10.1534/g3.115.016683)]. Here, a
-chromosome is itself a list with two components. The first is a integer vector
-containing identifiers of founder alleles, and the second is a "numeric" vector
-(a vector of doubles) that contains positions. The rational is to only track the
-(founder) origin of chromosomal segments and their borders. To obtain genotypic
-data from the segmental representation, knowledge on (i) the genetic positions
-of loci and (ii) the genotypes of founder individuals are needed. The rational
-behind the segmental representation is that it can be more efficient that the
-genotypic representation in terms of computer memory (it is more efficient to
-save only data on segments rather than on all allelic states on these segments)
-and computation time for meiosis (it can be more efficient to update the segment
-data rather than copying a (possibly very large) number of integers (allelic
-states) to build a new gamete. However, converting the segmental representation
-to a genotypic representation also takes time. Hence, if genotypes are needed
-after each meiosis event, we recommend to used the genotypic representation. If
-intermediate genotypes are not needed, for instance when simulating the
-production of inbred lines by recurrent selfing, the segmental representation is
-likely superior. The segmental representation has, as another advantage, the
-possibility to compute realized coefficients of co-ancestry that deviate from
-expected coefficients of co-ancestry due to mendelian sampling. For both the
-genotypic and the segmental representation, data for simulating crossover events
-needs to be provided. Simulating meiosis events according to these two different
-types of representations will in the following be illustrated by means of
-several examples.
+# Introduction
 
-## Examples
+**Meiosis** is a lean R package for the simulation of meiosis events in diploid
+(or allopolyploid) plant species for genetic research in plant breeding.
+**Meiosis** offers two different but complementary approaches for the simulation
+of meiosis events which are based on different representations of the genomic
+data. The first representation, which we call *genotypic*, simply encodes
+genomic data in terms of the alleles (with integer coding) present at the
+various loci. For instance, with bi-allelic marker data it is common to encode
+alleles with the integers 0 and 1. Meiosis is then simulated with the function
+`meiosis_geno` and sequences of zeros and ones representing parental gametes are
+recombined into a new gamete. An alternative representation, which we herein
+call *segmental*, encodes genomic data in terms of founder alleles and segments
+borders (see Cheng et al.
+(2015)^[[XSim](https://doi.org/10.1534/g3.115.016683)]). A founder allele can be
+thought of as a label that identifies a chunk of DNA in terms of its
+proveniences from so-called founder individuals. Data on segment borders tell
+the beginning and the end of such a chunk. Founder individuals are created by a
+call to the function `create_xo_founder` and are characterized by two unique
+integers that code for their founder alleles. Meiosis is the simulated by the
+function `meiosis_xo` where founder alleles and segment data of two gametes are
+suitably combined to form a new gamete. In order to convert genomic data from
+the *segmental* to the *genomic* representation, it is first necessary to create
+a object of type *Converter* (reference class) and tell it the genotypes of all
+founder individuals via the method `insert_founder`. Thereafter, the conversion
+is performed by the method `convert`. All this is illustrated in examples below.
+For simulating meiosis, we generally first need to simulate crossovers. This is
+done internally (although the function `crossover` for doing so explicitly is
+exposed to the user), but needs a list of parameters. This list is created by a
+call to `create_xoparam` and should not be modified by the user.
+
+Meiosis is generally simulated by the functions `meiosis_geno` and `meiosis_xo`.
+However, I added shallow wrappers from simulating a cross (`cross_geno`,
+`cross_xo`), a selfing (`self_geno`, `self_xo`) and a doubled haploid
+(`dh_geno`, `dh_xo`) for convenience and code-expressiveness.
+
+The philosophy of **Meiosis** is to be as low-level a possible and to provide
+functionality with little overhead. 
+
+# Data structures, choosing between representations and limitations
+
+## Data structures
+
+### Crossover parameters
+
+A list with crossover parameters is needed to (internally) simulate crossover
+locations. This list should **not** be produced by hand but rather by the
+function `create_xoparam`. It contains parameters related to chromosome lengths
+and (possible) crossover interference.
+
+### Individuals
+
+An individuals is represented by a nested list, where only its lowest level
+differs between the *genotypic* and the *segmental* representation. In general
+an individual is a list containing (exactly) two gametes, called the *paternal*
+and the *maternal* gamete (names are, however, unimportant and just for
+convenience). A gamete is itself a list of chromosomes. Only at this this level,
+the two representations diverge. While for the *genotypic* representation a
+chromosome is simply an integer vector, it is two vectors of equal length for
+the *segmental* representation. Here, the first vector is an integer vector
+containing founder alleles and the second vector is a numeric (double) vector
+containing the end points of segments in centiMorgan.
+
+### Founder individuals
+
+A founder individual does only exist (or is meaningful) for simulations using
+the *segmental* representation. Here, a founder individual has the same
+structure as a conventional individual, but there is only one founder allele on
+each chromosome that is the same for all chromosomes on a gamete. The data on
+segments are only the end points of the chromsomes. Founder individuals are the
+starting point for simulations using `meiosis_xo`.
+
+### Positions
+
+The "data structure" positions is simply a list that containes vectors with the
+genetic map positions of the respective locus on the chromosomes. There is one
+such vector for each chromosome. Map positions are given in centiMorgan, must be
+strictly increasing and the first position must be non-negative. Positons are
+required when simulating meiosis with `meiosis_geno` (*genotypic*
+representation) or when converting from *segmental* to *genotypic*.
+
+### Converter
+
+A converter is a reference class for converting data from the
+*segmental* to the *genotypic* representation. It has only two methods, namely
+`insert_founder` for inserting founder genotypes and `convert` for actually
+converting the data.
+
+**Meiosis** provides some convenience functions for checking the integrity of
+the data structures, like `check_positions`, `check_xo_individual` and
+`check_geno_individual`, but functions in general do not perform any checks
+themselves and will end up in undefined behaviour if called with invalid
+arguments.
+
+
+## Choosing between representations
+
+The critical user migh ask the legitimate question whey there are two different
+representation of genomic data. The reason is two-fold. First, different
+representations have different strenghts in terms of computation time and memory
+requirements. Generally speaking, the *genotypic* representation will be
+advantageous if (i) you don't want to bother with the much more complicated
+*segmental* representation, (ii) you only simulate few generations in a breeding
+program or you always need genotypic data even for intermediate generations,
+(iii) you are only dealing with low-density genomic data. On the other hand, the
+*segmental* representation will be (possibly much) more efficient if you have
+high-density data and you are doing simulations where you won't always need
+genotypes of the individuals. An example would be the simulation of
+self-fertilization for a couple of generations, were you only care for the
+genotypes of the inbred lines at the very end. Another advantage of the
+*segmental* representation is that it allows you to compute a "realized"
+coefficient of co-ancestry, which is defined here as the probability that at a
+randomly drawn positions on the genome, an allele randomly drawn from one
+individual is identical by descent (*i.e.*, shows the same founder allele) as a
+randomly drawn allele from a second individual. This can be done by the function
+`realized_coancestry` and allows for computing relationship coefficients that
+capture deviations from additive genetic relationships due to Mendelian
+sampling.
+
+## Limitations
+
+### Sex
+
+chromosomes *Meiosis* does currently not consider the possibility of
+different sexes in terms of gonosomes and, hence, is not suited to simulations
+in animal breeding. In case of dioecious plants, its the user's responsibility
+to manage the matings.
+
+### Mutations
+
+*Meiosis* does not take into account the possibility to consider
+mutation events in the simulation of meiosis. There are various reasons for
+this. First, *Meiosis* is mainly inteded for the simulation of plant breeding
+programs, where the number of generations is limited and, hence, mutations will
+anyway play a minor role. Second, considering simulation events is only easy in
+case of point-mutations where an allele is replace by another one and all
+allelic states are known beforehand. Third, if the user wished to incorporate
+mutations, it is easy to do so after the simulation of meiosis.
+
+## Design decisions
+
+Taking decisions on the design and the interface of an
+applications is often times harder than the actual programing. Here, I outline
+the reasons for a few of such decisions. I decided to keep data structures as
+simple and "base" (in terms of basic R data structures) as possible. The only
+(inevitable) exception is the reference class `Converter`, which I will comment
+on later. Of course, I could have used objects for representing the list of
+crossover parameters and individuals (in different representations), but there
+are probably more disadvantages than advantages here. Ususally, users of a
+package (at least me) dislike if the package forces its own data structurs upon
+them and it is often times a hassle, if not a deal-breaker, to convert back and
+forth between the different structures. By using simple R lists, conversion to
+other formats (for instance, "gametes within chromosomes" or a two-rowed matrix
+representing the whole individual) are one-liners. I also (personally) found
+nested lists to be a convenient and clean way of representing genomic data. The
+reference class `Converter` is an exception, an the reason for its existence is
+the unfortunate lack of a proper (hash-) map data structure (like `dict`
+(dictionary) in python) that is represented by a SEXP and can be exposed to C++.
+For converting from founder alleles (*segmental) to actual alleles
+(*genotypic*), we need to fetch the correct genotypic data of a founder gamete,
+which is internally managed by a C++ hashmap. An alternative would be use to a
+matrix to represent all genotypic founder data and let the founder alleles be
+encoded by the actually indices that will pull the correct row/column from this
+matrix. However, I abandoned this possiblity because I think that it would not
+fit we with with other data structures and would impose unnecessary restriction
+on the encoding of the founder alleles.
+
+# Examples
+```{r, include = FALSE}
+library(knitr)
+opts_chunk$set(tidy.opts = list(width.cutoff = 50), tidy = TRUE)
+```
+
 The C++ routines use an independent random number generator. For seeding it, do e.g.
 ```{r}
 library('Meiosis')
-set.seed(123L)
-Meiosis::seed_rng(seed = 123L)
+set.seed(123L) ## Seed R's rng
+Meiosis::seed_rng(seed = 123L) ## Seed rng used by Meiosis
 ```
 
 ### Create crossover parameters
@@ -70,7 +218,7 @@ For the examples below, we need to simulate some genomic data. We now sample the
 loci per chromosome as well as the positions of these loci on the respective chromosome.
 
 ```{r}
-n_loci <- round(runif(n = n_chr, min = 5L, max = 10L))  ## sample number of loci per chromosome
+n_loci <- round(runif(n = n_chr, min = 5L, max = 10L))  ## sample number of loci
 ## sample positions of loci on the chromosome
 positions <- lapply(seq_len(n_chr), function(i) sort(runif(n_loci[i], min = 0, max = L[i])))
 ```
@@ -142,16 +290,21 @@ ind2 <- replicate(2L, lapply(n_loci, function(n) sample(c(0L, 1L), n, replace = 
                   simplify = FALSE) # Second individual as parent.
 
 pop <- replicate(n, Meiosis::cross_geno(ind, ind2, positions, xoparam), simplify = FALSE)
-for (i in seq_len(n_self))
-  for (j in seq_len(n))
+for (i in seq_len(n_self)) {
+  for (j in seq_len(n)) {
     pop[[i]] <- Meiosis::cross_geno(pop[[i]], pop[[i]], positions, xoparam)
+  }
+}
 
 ## Segmental representation
 f2 <- create_xo_founder(alleles = c(55L, 77L), L = L)
 pop_xo <- replicate(n, Meiosis::cross_xo(f, f2, xoparam), simplify = FALSE)
-for (i in seq_len(n_self))
-  for (j in seq_len(n))
+for (i in seq_len(n_self)) {
+  for (j in seq_len(n)) {
     pop_xo[[i]] <- Meiosis::cross_xo(pop_xo[[i]], pop_xo[[i]], xoparam)
+  }
+}
+
 
 # conv$convert(pop[[1]]) ## error, because genotypic data of second founder not present
 conv$insert_founder(c(55L, 77L), ind2)  ## insert second founder first
@@ -176,8 +329,10 @@ co-ancestry coefficients but taking into account variation due to Mendelian samp
 ```{r}
 ## Calculate realized coefficients of co-ancestry.
 Meiosis::realized_coancestry(f)
-Meiosis::realized_coancestry(p_xo) ## selfing progeny, expected coefficient is 0.75.
-Meiosis::realized_coancestry(pop_xo[[1L]], pop_xo[[2L]]) ## realized co-ancestry of two full-sibs.
+## selfing progeny, expected coefficient is 0.75.
+Meiosis::realized_coancestry(p_xo) 
+## realized co-ancestry of two full-sibs.
+Meiosis::realized_coancestry(pop_xo[[1L]], pop_xo[[2L]])
 ```
 
 We can also compute the realized heterozygosity of an individual, i.e., the proportion of
@@ -186,3 +341,12 @@ the genome that is heterozygous with respect to the founder alleles present.
 ```{r}
 ## Calculate realized heterozygosity.
 Meiosis::realized_heter(p_xo) 
+```
+
+# Acknowledgements
+
+Parts of the core functionality and documentation of **Meiosis** was inspired and
+adapted, respectively, from the package
+[simcross](https://github.com/kbroman/simcross) of [Karl
+Broman](http://kbroman.org/).
+

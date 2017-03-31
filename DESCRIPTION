@@ -1,12 +1,12 @@
 Package: Meiosis
 Type: Package
-Title: Simulation of Meiosis Events for Diploids
+Title: Simulation of meiosis in plant breeding research
 Version: 1.0.0
 Date: 2017-02-13
 Authors@R: c(
     person("Dominik", "Mueller", email = "dominikmueller64@yahoo.de", role = c("aut", "cre")),
     person(c("Karl", "W."), "Broman", email = "kbroman@biostat.wisc.edu", role = "aut"))
-Description: Tools for the simulation of meiosis events in diploid species.
+Description: Tools for simulation of meiosis in plant breeding research.
 License: GPL (>= 3)
 Depends: R (>= 3.3.2)
 Imports: methods,

@@ -78,6 +78,15 @@ Meiosis::realized_coancestry(p_xo) ## selfing progeny, expected coefficient of c
 Meiosis::realized_coancestry(pop_xo[[1L]], pop_xo[[2L]]) ## realized CoC of two full-sibs.
 mean(replicate(10000L, realized_heter(self_xo(self_xo(x, xoparam), xoparam))))
 
+
+nn <- c('paternal', 'maternal')
+x <- exdat$ind2
+names(x) <- nn
+exdat$ind2 <- x
+devtools::use_data(exdat)
+
+
+
 library('Meiosis')
 
 library('simcross')

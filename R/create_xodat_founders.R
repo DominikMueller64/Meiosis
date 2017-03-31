@@ -32,6 +32,8 @@ create_xo_founder <- function(alleles, L) {
   if (length(alleles) != 2L)
     stop("'alleles' must have length 2.")
 
-  lapply(X = alleles, FUN = function(allele) create_xo_gamete(allele, L))
+  tmp <- lapply(X = alleles, FUN = function(allele) create_xo_gamete(allele, L))
+  names(tmp) <- c('paternal', 'maternal')
+  tmp
 }
 
