@@ -11,3 +11,4 @@
 ^cran-comments.md$
 ^codecov\.yml$
 ^pnrrs.R$
+^design_decisions.md$
