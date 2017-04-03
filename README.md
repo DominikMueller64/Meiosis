@@ -1,10 +1,10 @@
 Meiosis: Simulation of meiosis in plant breeding research
 ======
 [![Travis-CI Build Status](https://travis-ci.org/DominikMueller64/Meiosis.svg?branch=master)](https://travis-ci.org/DominikMueller64/Meiosis)
-[![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/Meiosis)](https://cran.r-project.org/package=Meiosis)
+[![CRAN_Status_Badge](https://www.r-pkg.org/badges/version/Meiosis)](https://cran.r-project.org/package=Meiosis)
 [![Coverage Status](https://img.shields.io/codecov/c/github/DominikMueller64/Meiosis/master.svg)](https://codecov.io/github/DominikMueller64/Meiosis?branch=master)
 
-**Meiosis** is a lean [R](http://www.r-project.org) package for the simulation
+**Meiosis** is a lean [R](https://www.r-project.org) package for the simulation
 of meiosis events in diploid (or allo-polyploid) plant species for genetic
 research in plant breeding.
 
@@ -12,7 +12,7 @@ research in plant breeding.
 
 ### Installation
 
-You can install bcgvr from its [GitHub repository](http://github.com/DominikMueller64/Meiosis).
+You can install bcgvr from its [GitHub repository](https://github.com/DominikMueller64/Meiosis).
 You first need to install the [devtools](https://github.com/hadley/devtools) package.
 
 ```r
@@ -91,5 +91,5 @@ merchantability or fitness for a particular purpose.  See the GNU
 General Public License for more details.
 
 A copy of the GNU General Public License, version 3, is available at
-<http://www.r-project.org/Licenses/GPL-3>
+<https://www.r-project.org/Licenses/GPL-3>
 
