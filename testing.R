@@ -4,30 +4,46 @@ set.seed(123L)
 Meiosis::seed_rng(seed = 123L)
 
 ## Example: Create crossover-parameters
-n_chr <- 3L  ## number of chromosomes
+n_chr <- 20L  ## number of chromosomes
 L <- runif(n = n_chr, min = 100, max = 300)  ## sample length of chromosomes in cM
 xoparam <- create_xoparam(L)  ## no interference, no obligate chiasma
 str(xoparam)
 
 
 ## Genotypic data: number of loci per chromosome and positions.
-n_loci <- round(runif(n = n_chr, min = 5L, max = 10L))  ## sample number of loci per chromosome
+n_loci <- round(runif(n = n_chr, min = 1L, max = 1L))  ## sample number of loci per chromosome
 ## sample positions of loci on the chromosome
 positions <- lapply(seq_len(n_chr), function(i) sort(runif(n_loci[i], min = 0, max = L[i])))
 
 ## Example 1: Simulate meiosis with genotypes.
-ind <- replicate(2L, lapply(n_loci, function(n) sample(c(0L, 1L), n, replace = TRUE)),
-                 simplify = FALSE) ## simulate some genotypic data
+sim_geno <- function(n_loci) {
+  replicate(2L, lapply(n_loci, function(n) sample(c(0L, 1L), n, replace = TRUE)),
+            simplify = FALSE)
+}
+
+ind <-  sim_geno(n_loci) ## simulate some genotypic data
 str(ind)
+
+microbenchmark::microbenchmark(times = 1000 ,
+ cross_geno(father = ind, mother = ind, positions = positions, xoparam = xoparam),
+ dh_geno(ind, positions = positions, xoparam = xoparam)
+)
 
 p_geno <- Meiosis::cross_geno(father = ind, mother = ind, positions = positions,
                               xoparam = xoparam)
+
 str(p_geno)
 
 
 ## Example 2: Simulate meiosis with segmental representation.
 f_alleles <- c(21L, 65L)
 f <- Meiosis::create_xo_founder(alleles = f_alleles, L = L)
+
+
+microbenchmark::microbenchmark(times = 1000 ,
+cross_xo(father = f, mother = f, xoparam = xoparam),
+dh_xo(f, xoparam = xoparam)
+)
 
 p_xo <- Meiosis::cross_xo(father = f, mother = f, xoparam = xoparam)
 str(p_xo)
@@ -38,8 +54,6 @@ conv$insert_founder(f_alleles, ind)
 conv$convert(f)
 conv$convert(f)
 
-conv
-?Meiosis::Converter
 ## Example 3: Derive n inbred lines from a bi-parental cross.
 n_self <- 10L  ## number of generations of selfing
 n <- 30L ## number of progeny
@@ -65,6 +79,151 @@ for (i in seq_len(n))
 ## conv$convert(pop[[1]]) ## error, because genotypic data of second founder not present
 conv$insert_founder(c(55L, 77L), ind2)  ## insert second founder first
 pop_geno <- lapply(pop_xo, conv$convert) ## convert whole population
+
+## Example 4: Create a synthetic population
+
+make_synthetic <- function(founder, n_ind, n_gen) {
+
+  ## Cross parents
+  n_founder <- length(founder)
+  tmp <- combn(x = seq_len(n_founder), m = 2L)
+  combinations <- split(tmp, col(tmp))
+  pop_xo <- replicate(n = n_ind, simplify = FALSE, {
+    pair <- unlist(sample(combinations, size = 1L))
+    cross_xo(founder[[pair[1L]]], founder[[pair[2L]]], xoparam)
+  })
+
+  ## Random mating
+  for (i in seq_len(n_gen)) {
+    pop_xo_new <- pop_xo ## copy
+    for (j in seq_len(n_ind)) {
+      pair <- sample(n_ind, size = 2L, replace = TRUE)  ## selfing possible
+      pop_xo_new[[j]] <- cross_xo(pop_xo[[pair[1L]]], pop_xo[[pair[2L]]], xoparam)
+    }
+    pop_xo <- pop_xo_new ## swap
+  }
+  pop_xo
+}
+
+n_founder <- 5L
+n_ind <- 100L
+n_gen <- 10L
+alleles <- lapply(seq_len(n_founder), function(i) c(2L * i - 1L, 2L * i))
+founder <- lapply(alleles, create_xo_founder, L = L)
+
+## Create synthetic
+system.time(syn <- make_synthetic(founder, n_ind, n_gen))
+
+
+## Compute realized co-ancestry matrix
+C <- matrix(data = NA_real_, nrow = n_ind, ncol = n_ind)
+for (i in seq_len(n_ind))
+  for (j in i:n_ind)
+    C[i, j] <- C[j, i] <- 2 * realized_coancestry(syn[[i]], syn[[j]])
+C
+
+## ## Simulate some founder genotypes and use the to convert the synthetic
+## sim_geno <- function(n_loci) {
+##   tmp <- lapply(n_loci, function(n) sample(c(0L, 1L), n, replace = TRUE))
+##   list(tmp, tmp)
+## }
+## ## a <- list(replicate(n_chr, 1L, simplify = FALSE), replicate(n_chr, 1L, simplify = FALSE))
+## ## b <- list(replicate(n_chr, 0L, simplify = FALSE), replicate(n_chr, 0L, simplify = FALSE))
+## ## founder_geno <- list(a,b)
+
+## syn_conv <- new(Converter, positions)
+## founder_geno <- replicate(n_founder, sim_geno(n_loci), simplify = FALSE)
+## for (i in seq_len(n_founder)) syn_conv$insert_founder(alleles[[i]], founder_geno[[i]])
+## syn_geno <- lapply(syn, syn_conv$convert)
+
+## Construct a marker-based relationship matrix
+
+## ## Going to a single matrix for all genotypes is a one-liner.
+## transf <- function(x) do.call(rbind, lapply(x, function(i) Reduce(`+`, lapply(i, unlist))))
+## p <- colMeans(transf(founder_geno)) / 2
+## poly <- p * (1 - p) > sqrt(.Machine$double.eps)
+## x <- transf(syn_geno)
+## x[,1:5]
+## p <- rep(0,length(p))
+## x <- scale(x, center = 2 * p, scale = FALSE)
+## G <- tcrossprod(x) / sum(2 * p * (1 - p))
+## ## x <- scale(x[,poly], center = 2 * p[poly], scale = sqrt(2 * p[poly] * (1 - p[poly])))
+## ## G <- tcrossprod(x) / sum(poly)
+
+## cor(as.vector(G), as.vector(C)); plot(as.vector(G), as.vector(C)); abline(a = 0, b = 1)
+
+
+## Example 5: Comparison between expected and realized coefficient of co-ancestry.
+
+library('pedigree')
+
+## Create a simple pedigree
+id <- 1:6
+dam <- c(0,0,1,1,4,4)
+sire <- c(0,0,2,2,3,5)
+ped <- data.frame(id,dam,sire)
+
+## Compute the additive genetic relationship matrix
+cwd <- getwd()
+tpdir <- tempdir()
+setwd(tpdir)
+makeA(ped, which = rep(TRUE, length(id)))
+coanc <- read.table("A.txt")
+setwd(cwd)
+
+A <- matrix(NA_real_, nrow = length(id), ncol = length(id))
+A[as.matrix(coanc[1:2])] <- A[as.matrix(coanc[2:1])] <- coanc[[3]]
+eCoc <- A / 2  ## realized coefficient of co-ancestry
+eCoc
+
+## Helper function for simulating pedigree and computing realized coefficients of co-ancestry.
+sim_ped <- function() {
+  f1 <- create_xo_founder(c(1L, 2L), L)
+  f2 <- create_xo_founder(c(3L, 4L), L)
+  i1 <- cross_xo(f1, f2, xoparam)
+  i2 <- cross_xo(f1, f2, xoparam)
+  i3 <- cross_xo(i1, i2, xoparam)
+  i4 <- cross_xo(i2, i3, xoparam)
+
+  tmp <- list(f1, f2, i1, i2, i3, i4)
+  C <- matrix(data = NA_real_, nrow = length(id), ncol = length(id))
+  for (i in seq_along(id))
+    for (j in i:length(id))
+      C[i, j] <- C[j, i] <- realized_coancestry(tmp[[i]], tmp[[j]])
+  C
+}
+
+
+##
+
+## Verify that, on average, the realized coefficients are equal to the expected coefficients.
+n <- 1000L
+rCoc_avg <- Reduce(f = `+`, x = replicate(n, sim_ped(), simplify = FALSE)) / n
+rCoc <- sim_ped()
+plot(as.vector(rCoc_avg), as.vector(eCoc)); abline(0, 1)
+
+
+
+
+
+
+
+
+str(u, m  = 2)
+u[[1]]
+str(u[[1]])
+str(syn_geno, m=1)
+
+u <- list(1:5, 1:5)
+Reduce(`+`, u)
+as.vector(u)
+
+length(syn)
+
+library(itertools)
+?itertools2::quantify
+
+
 
 ## Further examples
 

@@ -155,7 +155,7 @@ mutations, it is easy to do so after the simulation of meiosis.
 # Examples
 ```{r, include = FALSE}
 library(knitr)
-opts_chunk$set(tidy.opts = list(width.cutoff = 50), tidy = TRUE)
+opts_chunk$set(tidy.opts = list(width.cutoff = 80), tidy = TRUE)
 ```
 
 The C++ routines use an independent random number generator. For seeding it, do e.g.
@@ -180,7 +180,7 @@ xoparam <- create_xoparam(L)  ## no interference, no obligate chiasma
 str(xoparam)
 ```
 
-### Number of loci per chromosome and positions.
+### Number of loci per chromosome and positions
 For the examples below, we need to simulate some genomic data. We sample the number of
 loci per chromosome as well as the positions of these loci on the respective chromosome.
 
@@ -190,10 +190,10 @@ n_loci <- round(runif(n = n_chr, min = 5L, max = 10L))  ## sample number of loci
 positions <- lapply(seq_len(n_chr), function(i) sort(runif(n_loci[i], min = 0, max = L[i])))
 ```
 
-#### Example 1: Simulate meiosis with genotypes.
-I here show how to simulate meiosis with data in the "genotypic" representation. We first
+#### Example 1: Simulate meiosis with genomic data in *genotypic* representation.
+This example shows how to simulate meiosis with data in the "genotypic" representation. We first
 simulate some genotypic data of an individual and then call the function `cross_geno` for
-simulating meiosis. In this case, the output is a selfing progenty of `ind`.
+simulating meiosis. In this case, the output is a selfing progeny of `ind`.
 
 ```{r}
 ind <- replicate(2L, lapply(n_loci, function(n) sample(c(0L, 1L), n, replace = TRUE)),
@@ -205,7 +205,7 @@ p_geno <- Meiosis::cross_geno(father = ind, mother = ind, positions = positions,
 str(p_geno)
 ```
 
-### Example 2: Simulate meiosis with segmental representation.
+### Example 2: Simulate meiosis with genomic data in *segmental* representation.
 Here, I show how to do the same as in Example 1, but with data in the segmental
 representation. We first have to create one or multiple founder
 individuals. Each founder individual has two (distinct!) founder alleles. These
@@ -236,14 +236,14 @@ p_xo <- Meiosis::cross_xo(father = f, mother = f, xoparam = xoparam)
 str(p_xo)
 ```
 
-#### Create a converter for converting segmental data to genotypic data.
+Create a converter to convert from the segmental to the genotypic representation.
 ```{r}
 conv <- new(Meiosis::Converter, positions) ## create a new converter object
 conv$insert_founder(f_alleles, ind) ## insert the (one and only) founder
 str(conv$convert(p_xo)) ## convert the progeny
 ```
 
-### Example 3: Derive n inbred lines from a bi-parental cross.
+### Example 3: Derivation of inbred lines from a bi-parental cross.
 In this example, I show how te derive a number of inbred lines from a cross between two
 parents. The first part of the examples shows how to achieve this using the "genotypic"
 representation and the second part shows the "segmental" case.
@@ -281,6 +281,107 @@ Alternatively, we could have used the functions `Meiosis::self_geno` and `Meiosi
 which are wrappers around `Meiosis::cross_geno` and `Meiosis::cross_xo`, for producing the
 selfings.
 
+
+### Example 4: Creation of a synthetic population
+In this example, we create a synthetic population (*segmental representation*) by
+crossing a number of founder individuals and subsequent random mating for several
+generations.
+
+```{r}
+make_synthetic <- function(founder, n_ind, n_gen) {
+
+  ## Cross parents
+  n_founder <- length(founder)
+  tmp <- combn(x = seq_len(n_founder), m = 2L)
+  combinations <- split(tmp, col(tmp))
+  pop_xo <- replicate(n = n_ind, simplify = FALSE, {
+    pair <- unlist(sample(combinations, size = 1L))
+    cross_xo(founder[[pair[1L]]], founder[[pair[2L]]], xoparam)
+  })
+
+  ## Random mating
+  for (i in seq_len(n_gen)) {
+    pop_xo_new <- pop_xo ## copy
+    for (j in seq_len(n_ind)) {
+      pair <- sample(n_ind, size = 2L, replace = TRUE)  ## selfing possible
+      pop_xo_new[[j]] <- cross_xo(pop_xo[[pair[1L]]], pop_xo[[pair[2L]]], xoparam)
+    }
+    pop_xo <- pop_xo_new ## swap
+  }
+  pop_xo
+}
+
+n_founder <- 5L  ## number of founders
+n_ind <- 100L  ## size of synthetic
+n_gen <- 10L  # generations of random mating
+alleles <- lapply(seq_len(n_founder), function(i) c(2L * i - 1L, 2L * i))
+founder <- lapply(alleles, create_xo_founder, L = L)
+
+## Create synthetic
+system.time(syn <- make_synthetic(founder, n_ind, n_gen))
+```
+
+### Example 5: Computation of realized coefficients of co-ancestry
+Here, we calculate realized coefficient of co-ancestry. These are analogous to the classical
+co-ancestry coefficients but take into account variation due to Mendelian sampling.
+```{r}
+## Calculate realized coefficients of co-ancestry.
+Meiosis::realized_coancestry(f)
+Meiosis::realized_coancestry(p_xo)  ## selfing progeny, expected coefficient is 0.75.
+```
+
+
+### Example 6: Comparison between expected and realized coefficients of co-ancestry
+Here, we verify that the realized coefficients of co-ancestry correspond, on average, to
+expected coefficients, which are half of the additive genetic relationships
+between individuals. We therefore simulate a small pedigree and used the package
+[pedigree](https://cran.r-project.org/web/packages/pedigree/index.html) to compute additive
+genetic relationships.
+
+```{r}
+library('pedigree')
+
+## Create a simple pedigree
+id <- 1:6
+dam <- c(0, 0, 1, 1, 4, 4)
+sire <- c(0, 0, 2, 2, 3, 5)
+ped <- data.frame(id, dam, sire)
+
+## Compute the additive genetic relationship matrix and coefficients of co-ancestry
+cwd <- getwd()
+tpdir <- tempdir()
+setwd(tpdir)
+invisible(makeA(ped, which = rep(TRUE, length(id))))
+coanc <- read.table("A.txt")
+setwd(cwd)
+
+A <- matrix(NA_real_, nrow = length(id), ncol = length(id))
+A[as.matrix(coanc[1:2])] <- A[as.matrix(coanc[2:1])] <- coanc[[3]]
+eCoc <- A / 2  ## expected coefficients of co-ancestry
+
+## Helper function for simulating pedigree and computing realized coefficients of co-ancestry.
+sim_ped <- function() {
+  f1 <- create_xo_founder(c(1L, 2L), L)
+  f2 <- create_xo_founder(c(3L, 4L), L)
+  i1 <- cross_xo(f1, f2, xoparam)
+  i2 <- cross_xo(f1, f2, xoparam)
+  i3 <- cross_xo(i1, i2, xoparam)
+  i4 <- cross_xo(i2, i3, xoparam)
+
+  tmp <- list(f1, f2, i1, i2, i3, i4)
+  C <- matrix(data = NA_real_, nrow = length(id), ncol = length(id))
+  for (i in seq_along(id))
+    for (j in i:length(id))
+      C[i, j] <- C[j, i] <- realized_coancestry(tmp[[i]], tmp[[j]])
+  C
+}
+
+## Verify that, on average, the realized coefficients are equal to the expected coefficients.
+n <- 1000L  ## number of replicates
+rCoc_avg <- Reduce(f = `+`, x = replicate(n, sim_ped(), simplify = FALSE)) / n ##  take average
+plot(as.vector(rCoc_avg), as.vector(eCoc)); abline(0, 1)
+```
+
 ### Further examples
 We can also produce a doubled haploid progeny, both from the "segmental" and the "genotypic"
 representation.
@@ -289,17 +390,6 @@ representation.
 ## Simulate a doubled haploid individual.
 str(Meiosis::dh_geno(ind, positions, xoparam))
 str(conv$convert(Meiosis::dh_xo(f, xoparam)))
-```
-
-Furthermore, we can calculate realized coefficient of co-ancestry, analogous to the classical
-co-ancestry coefficients but taking into account variation due to Mendelian sampling.
-```{r}
-## Calculate realized coefficients of co-ancestry.
-Meiosis::realized_coancestry(f)
-## selfing progeny, expected coefficient is 0.75.
-Meiosis::realized_coancestry(p_xo) 
-## realized co-ancestry of two full-sibs.
-Meiosis::realized_coancestry(pop_xo[[1L]], pop_xo[[2L]])
 ```
 
 We can also compute the realized heterozygosity of an individual, i.e., the proportion of
