@@ -1,3 +1,8 @@
+## Resubmission
+This is a resubmission. I have:
+* removed the accidentially included file 'Meiosis_1.0.0.tar.gz'.
+
+
 ## Test environments
 * local ubuntu 14.04 install, R 3.3.2
 * ubuntu 12.04 (on travis-ci), R 3.3.2
@@ -9,4 +14,4 @@
 There were no ERRORs or WARNINGs or NOTEs. 
 
 ## Downstream dependencies
-This is the first submission.
+There are no dependencies.
