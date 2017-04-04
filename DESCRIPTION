@@ -2,7 +2,7 @@ Package: Meiosis
 Type: Package
 Title: Simulation of Meiosis in Plant Breeding Research
 Version: 1.0.0
-Date: 2017-02-13
+Date: 2017-04-04
 Authors@R: c(
     person("Dominik", "Mueller", email = "dominikmueller64@yahoo.de", role = c("aut", "cre")),
     person(c("Karl", "W."), "Broman", email = "kbroman@biostat.wisc.edu", role = "aut"))

@@ -335,7 +335,7 @@ Meiosis::realized_coancestry(p_xo)  ## selfing progeny, expected coefficient is 
 Here, we verify that the realized coefficients of co-ancestry correspond, on average, to
 expected coefficients, which are half of the additive genetic relationships
 between individuals. We therefore simulate a small pedigree and used the package
-[pedigree](https://cran.r-project.org/web/packages/pedigree/index.html) to compute additive
+[pedigree](https://CRAN.R-project.org/package=pedigree) to compute additive
 genetic relationships.
 
 ```{r}
