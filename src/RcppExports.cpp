@@ -6,36 +6,6 @@
 
 using namespace Rcpp;
 
-// bcgv
-Rcpp::List bcgv(std::vector<std::vector<std::vector<double>>> individual, std::vector<std::vector<double>> positions, std::vector<std::vector<double>> locus_effects, const int n_gam, const double se_level, const int min_rep, const int max_rep, const int m, const double p);
-RcppExport SEXP Meiosis_bcgv(SEXP individualSEXP, SEXP positionsSEXP, SEXP locus_effectsSEXP, SEXP n_gamSEXP, SEXP se_levelSEXP, SEXP min_repSEXP, SEXP max_repSEXP, SEXP mSEXP, SEXP pSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< std::vector<std::vector<std::vector<double>>> >::type individual(individualSEXP);
-    Rcpp::traits::input_parameter< std::vector<std::vector<double>> >::type positions(positionsSEXP);
-    Rcpp::traits::input_parameter< std::vector<std::vector<double>> >::type locus_effects(locus_effectsSEXP);
-    Rcpp::traits::input_parameter< const int >::type n_gam(n_gamSEXP);
-    Rcpp::traits::input_parameter< const double >::type se_level(se_levelSEXP);
-    Rcpp::traits::input_parameter< const int >::type min_rep(min_repSEXP);
-    Rcpp::traits::input_parameter< const int >::type max_rep(max_repSEXP);
-    Rcpp::traits::input_parameter< const int >::type m(mSEXP);
-    Rcpp::traits::input_parameter< const double >::type p(pSEXP);
-    rcpp_result_gen = Rcpp::wrap(bcgv(individual, positions, locus_effects, n_gam, se_level, min_rep, max_rep, m, p));
-    return rcpp_result_gen;
-END_RCPP
-}
-// to_matrix
-Rcpp::IntegerMatrix to_matrix(const Rcpp::List& x);
-RcppExport SEXP Meiosis_to_matrix(SEXP xSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const Rcpp::List& >::type x(xSEXP);
-    rcpp_result_gen = Rcpp::wrap(to_matrix(x));
-    return rcpp_result_gen;
-END_RCPP
-}
 // seed_rng
 int seed_rng(const Rcpp::Nullable<int>& seed);
 RcppExport SEXP Meiosis_seed_rng(SEXP seedSEXP) {

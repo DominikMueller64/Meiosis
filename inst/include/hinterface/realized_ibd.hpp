@@ -19,7 +19,7 @@ namespace realized_ibd_ns
     int ipat = 0;
     int cur_alle = (matloc[ipat] <= patloc[imat]);
     double left = 0;
-    double right;
+    double right = 0;
     while(true) {
       if (cur_alle) {
         do
@@ -30,6 +30,7 @@ namespace realized_ibd_ns
           }
           imat++;
           left = right;
+
         } while (patloc[ipat] >= matloc[imat] && imat < imatmax);
         cur_alle = 1 - cur_alle;
       }

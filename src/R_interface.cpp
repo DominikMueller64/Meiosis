@@ -50,14 +50,14 @@ Rcpp::NumericVector crossover(const double L,
 }
 
 Rcpp::IntegerVector meiosis_geno_(const Rcpp::IntegerVector& patalle,
-                                 const Rcpp::IntegerVector& matalle,
-                                 const Rcpp::NumericVector& pos,
-                                 const double L,
-                                 const int m,
-                                 const double p,
-                                 const bool obligate_chiasma,
-                                 const double Lstar
-                                 )
+                                  const Rcpp::IntegerVector& matalle,
+                                  const Rcpp::NumericVector& pos,
+                                  const double L,
+                                  const int m,
+                                  const double p,
+                                  const bool obligate_chiasma,
+                                  const double Lstar
+                                  )
 {
   const auto& xlocations = Meiosis::crossover<std::vector<double>>(L, m, p, obligate_chiasma, Lstar, engine);
   return Meiosis::meiosis_geno<Rcpp::IntegerVector, std::vector<double>, Rcpp::NumericVector>(
@@ -268,92 +268,11 @@ double realized_coancestry(const Rcpp::List& individual_1,
 
      Rcpp::NumericVector tmp = pat_1_i[1];
      len += tmp[tmp.size() - 1];
-     tot += f(pat_1_i[0], pat_1_i[1], pat_2_i[0], pat_2_i[1]) +
-            f(pat_1_i[0], pat_1_i[1], mat_2_i[0], mat_2_i[1]) +
-            f(mat_1_i[0], mat_1_i[1], pat_2_i[0], pat_2_i[1]) +
-            f(mat_1_i[0], mat_1_i[1], mat_2_i[0], mat_2_i[1]);
+     tot += f(pat_1_i[0], pat_1_i[1], pat_2_i[0], pat_2_i[1]);
+     tot += f(pat_1_i[0], pat_1_i[1], mat_2_i[0], mat_2_i[1]);
+     tot += f(mat_1_i[0], mat_1_i[1], pat_2_i[0], pat_2_i[1]);
+     tot += f(mat_1_i[0], mat_1_i[1], mat_2_i[0], mat_2_i[1]);
+
    }
    return tot / (4.0 * len);
 }
-
-
-
-
-// // [[Rcpp::export(".meiosis_geno_std")]]
-// std::vector<int> meiosis_geno_std(const std::vector<int>& patalle,
-//                                   const std::vector<int>& matalle,
-//                                   const std::vector<double>& pos,
-//                                   const double L,
-//                                   const int m,
-//                                   const double p,
-//                                   const bool obligate_chiasma,
-//                                   const double Lstar
-//                                   )
-// {
-//   const auto& xlocations = Meiosis::crossover<std::vector<double> >(L, m, p, obligate_chiasma, Lstar, engine);
-//   return Meiosis::meiosis_geno<std::vector<int>, std::vector<double>>(
-//   patalle, matalle, xlocations, pos, engine);
-
-// }
-
-
-// // [[Rcpp::export("meiosis_geno_std")]]
-// std::vector<std::vector<int> > meiosis_geno_ind_std(
-//                                  const std::vector<std::vector<std::vector<int> > >& individual,
-//                                  const std::vector<std::vector<double> >& pos,
-//                                  const std::vector<double>& L,
-//                                  const int m,
-//                                  const double p,
-//                                  const bool obligate_chiasma,
-//                                  const std::vector<double>& Lstar)
-// {
-//   std::vector<std::vector<int> > gamete(L.size());
-//   for (std::size_t i = 0; i != L.size(); ++i){
-//     gamete[i] = meiosis_geno_std(individual[0][i], individual[1][i],
-//                                  pos[i], L[i], m, p, obligate_chiasma, Lstar[i]);
-//   }
-//   return gamete;
-// }
-
-
-// // This appears to be (always) slower than the .rcpp version!
-// // [[Rcpp::export(".meiosis_xo_std")]]
-// Rcpp::List meiosis_xo_std(const std::vector<int>& patalle,
-//                              const std::vector<double>& patloc,
-//                              const std::vector<int>& matalle,
-//                              const std::vector<double>& matloc,
-//                              const double L,
-//                              const int m,
-//                              const double p,
-//                              const bool obligate_chiasma,
-//                              const double Lstar
-//                              )
-// {
-//   const auto& xlocations = Meiosis::crossover<std::vector<double> >(L, m, p, obligate_chiasma, Lstar, engine);
-//   const auto& ret = Meiosis::meiosis_xo<std::vector<int>, std::vector<double> >(
-//                        patalle, patloc, matalle, matloc, xlocations, engine);
-//   return Rcpp::List::create(Rcpp::Named("alleles") = ret.first,
-//                             Rcpp::Named("locations") = ret.second);
-// }
-
-// // [[Rcpp::export]]
-// Rcpp::List test(const Rcpp::List& individual,
-//                 const Rcpp::List& xoparam)
-// {
-//   const Rcpp::NumericVector& L = xoparam[0];
-//   int m = xoparam[1];
-//   double p = xoparam[2];
-//   bool obligate_chiasma = xoparam[3];
-//   const Rcpp::NumericVector& Lstar = xoparam[4];
-
-//   const Rcpp::List& paternal = individual[0];
-//   const Rcpp::List& maternal = individual[1];
-//   Rcpp::List gamete(L.size());
-//   for (std::size_t i = 0; i != L.size(); ++i){
-//     const Rcpp::List& pat = paternal[i];
-//     const Rcpp::List& mat = maternal[i];
-//     gamete[i] = meiosis_xo(pat[0], pat[1], mat[0], mat[1], L[i],
-//                               m, p, obligate_chiasma, Lstar[i]);
-//   }
-//   return gamete;
-// }

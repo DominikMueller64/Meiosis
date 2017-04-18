@@ -1,6 +1,12 @@
-# Meiosis 1.0.0
+# Meiosis 1.0.1
 
-* v1.1.0
+## Improvements
+* improved check functions
+* added optional checks to functions performing meiosis
+
+## Fixes
+* removed unit tests that rely on seeding the C++ RNG because of issues on some platforms
+* fixed issues with memtest notes
 
 
 

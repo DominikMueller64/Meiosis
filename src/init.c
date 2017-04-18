@@ -4,7 +4,6 @@
 #include <R_ext/Rdynload.h>
 
 /* .Call calls */
-extern SEXP Meiosis_bcgv(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
 extern SEXP Meiosis_calc_Lstar(SEXP, SEXP, SEXP, SEXP);
 extern SEXP Meiosis_cross_geno(SEXP, SEXP, SEXP, SEXP);
 extern SEXP Meiosis_cross_xo(SEXP, SEXP, SEXP);
@@ -18,12 +17,12 @@ extern SEXP Meiosis_meiosis_xo(SEXP, SEXP);
 extern SEXP Meiosis_realized_coancestry(SEXP, SEXP);
 extern SEXP Meiosis_realized_heter(SEXP);
 extern SEXP Meiosis_seed_rng(SEXP);
-extern SEXP Meiosis_to_matrix(SEXP);
 extern SEXP _rcpp_module_boot_Module(void);
+
+/* extern SEXP Meiosis_test_coancestry(SEXP, SEXP, SEXP, SEXP); */
 
 static const R_CallMethodDef CallEntries[] =
 {
-    {"Meiosis_bcgv",                (DL_FUNC) &Meiosis_bcgv,                9},
     {"Meiosis_calc_Lstar",          (DL_FUNC) &Meiosis_calc_Lstar,          4},
     {"Meiosis_cross_geno",          (DL_FUNC) &Meiosis_cross_geno,          4},
     {"Meiosis_cross_xo",            (DL_FUNC) &Meiosis_cross_xo,            3},
@@ -37,7 +36,6 @@ static const R_CallMethodDef CallEntries[] =
     {"Meiosis_realized_coancestry", (DL_FUNC) &Meiosis_realized_coancestry, 2},
     {"Meiosis_realized_heter",      (DL_FUNC) &Meiosis_realized_heter,      1},
     {"Meiosis_seed_rng",            (DL_FUNC) &Meiosis_seed_rng,            1},
-    {"Meiosis_to_matrix",           (DL_FUNC) &Meiosis_to_matrix,           1},
     {"_rcpp_module_boot_Module",    (DL_FUNC) &_rcpp_module_boot_Module,    0},
     {NULL,                          NULL,                                   0}
 };

@@ -59,7 +59,7 @@ A vignette describing the functionality of the package and the data structures
 is available from within R. 
 
 ```r
-vignette('Meiosis', package = 'Meiosis')
+vignette('Introduction', package = 'Meiosis')
 ```
 
 ---

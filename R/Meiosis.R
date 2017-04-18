@@ -106,6 +106,7 @@ NULL
 #' @param individual List. Individual.
 #' @param positions List. Genetic positions.
 #' @param xoparam List. Crossover parameters.
+#' @param check Logical. Should checks be performed?
 #'
 #' @return List. A new gamete.
 #'
@@ -123,9 +124,10 @@ NULL
 #' @description Simulation of a cross.
 #'
 #' @param father List. Father.
-#' @param mother List. Father.
+#' @param mother List. Mother.
 #' @param positions List. Genetic positions.
 #' @param xoparam List. Crossover parameters.
+#' @param check Logical. Should checks be performed?
 #'
 #' @return List. A new individual.
 #'
@@ -144,6 +146,7 @@ NULL
 #' @param individual List. Individual.
 #' @param positions List. Genetic positions.
 #' @param xoparam List. Crossover parameters.
+#' @param check Logical. Should checks be performed?
 #'
 #' @return List. A new individual.
 #'
@@ -163,6 +166,7 @@ NULL
 #' @param individual List. Individual.
 #' @param positions List. Genetic positions.
 #' @param xoparam List. Crossover parameters.
+#' @param check Logical. Should checks be performed?
 #'
 #' @return List. A new individual.
 #'
@@ -180,6 +184,7 @@ NULL
 #'
 #' @param individual List. Individual.
 #' @param xoparam List. Crossover parameters.
+#' @param check Logical. Should checks be performed?
 #'
 #' @return List. A new gamete.
 #'
@@ -197,8 +202,9 @@ NULL
 #' @description Simulation of a cross.
 #'
 #' @param father List. Father.
-#' @param mother List. Father.
+#' @param mother List. Mother.
 #' @param xoparam List. Crossover parameters.
+#' @param check Logical. Should checks be performed?
 #'
 #' @return List. A new individual.
 #'
@@ -216,6 +222,7 @@ NULL
 #'
 #' @param individual List. Individual.
 #' @param xoparam List. Crossover parameters.
+#' @param check Logical. Should checks be performed?
 #'
 #' @return List. A new individual.
 #'
@@ -234,6 +241,7 @@ NULL
 #'
 #' @param individual List. Individual.
 #' @param xoparam List. Crossover parameters.
+#' @param check Logical. Should checks be performed?
 #'
 #' @return List. A new individual.
 #'
@@ -252,6 +260,7 @@ NULL
 #' @param individual_1 List. A first Individual.
 #' @param individual_2 List. A second Individual. If \code{NULL}, self-relationship of
 #' \code{individual_1} is computed.
+#' @param check Logical. Should checks be performed?
 #'
 #' @return double. Realized coefficient of co-ancestry.
 #'
@@ -274,6 +283,7 @@ NULL
 #' the genome where founder alleles match.
 #'
 #' @param individual List. Individual.
+#' @param check Logical. Should checks be performed?
 #'
 #' @return double. Realized heterozygosity.
 #'
