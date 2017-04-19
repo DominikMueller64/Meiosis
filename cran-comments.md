@@ -1,7 +1,7 @@
 ## Resubmission
 This is a resubmission. I have:
-* removed the accidentially included file 'Meiosis_1.0.0.tar.gz'.
-
+* fixed memtest issues as hinted to be B. Ripley on 04/13/2017
+* fixed failing unit tests for platforms osx and fedora
 
 ## Test environments
 * local ubuntu 14.04 install, R 3.3.2

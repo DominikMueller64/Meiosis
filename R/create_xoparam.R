@@ -56,17 +56,17 @@
 create_xoparam <- function(L, m = 0L, p = 1.0,
                             obligate_chiasma = FALSE) {
 
-  if (!is.numeric(p) || p < 0.0 || p > 1.0)
+  if (!is.numeric(p) || length(p) != 1L || p < 0.0 || p > 1.0)
     stop("'p' must be a double between (including) 0 and 1")
 
-  if (!is.numeric(m) || m < 0.0 || !isTRUE(all.equal(m, round(m))))
+  if (!is.numeric(m) || length(p) != 1L || m < 0.0 || !isTRUE(all.equal(m, round(m))))
     stop("'m' must be an integer greater or equal to 0.")
 
-  if (!is.atomic(L) || !is.numeric(L) || any(L <= 0.0))
+  if (!is.atomic(L) || !is.double(L) || any(L <= 0.0))
     stop("'L' must be a numeric vector of (positive) chromosome lengths in CentiMorgan.")
 
   p <- as.double(p)
-  m <- round(m)
+  m <- as.integer(round(m))
   L <- as.double(L)
   obligate_chiasma <- as.logical(obligate_chiasma)
 

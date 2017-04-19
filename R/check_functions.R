@@ -106,8 +106,20 @@ check_xoparam <- function(x) {
     stop(msg)
   }
 
-  if (!is.atomic(x$L) || !is.double(x$L) || !is_sorted(x$L))
-    stop("'L' must be a strictly increasingly sorted double vector")
+  if (!is.atomic(x$L) || !is.double(x$L) || any(x$L <= 0.0))
+    stop("'L' must be a numeric vector of (positive) chromosome lengths in CentiMorgan.")
 
+  if (!is.integer(x$m) || length(x$m) != 1L || x$m < 0L)
+    stop("'m' must be a non-negative integer.")
+
+  if (!is.double(x$p) || length(x$p) != 1L || x$p < 0.0 || x$p > 1.0)
+    stop("'p' must be a double between (including) 0 and 1")
+
+  if (!is.logical(x$obligate_chiasma) || length(x$obligate_chiasma) != 1L)
+    stop("'obligate_chiasma' must be a boolean value")
+
+  if (!is.atomic(x$Lstar) || !is.double(x$Lstar) || any(x$Lstar <= 0.0 || any(x$Lstar > x$L)))
+    stop("'Lstar' must be a numeric vector of (positive) chromosome lengths in CentiMorgan. ",
+         "All its elements must be smaller than/equal to the corresponding elements in 'L'.")
 }
 

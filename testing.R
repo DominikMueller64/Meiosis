@@ -4,30 +4,36 @@ Meiosis::realized_coancestry(Meiosis::dh_xo(exdat$founder, exdat$xoparam),
                              Meiosis::dh_xo(exdat$founder, exdat$xoparam))
 
 
-## set.seed(123L)
-## ## The C++ routines use an independent random number generator. For seeding it, do e.g.
-## Meiosis::seed_rng(seed = 123L)
+set.seed(123L)
+## The C++ routines use an independent random number generator. For seeding it, do e.g.
+Meiosis::seed_rng(seed = 123L)
 
-## ## Example: Create crossover-parameters
-## n_chr <- 20L  ## number of chromosomes
-## L <- runif(n = n_chr, min = 100, max = 300)  ## sample length of chromosomes in cM
-## xoparam <- create_xoparam(L)  ## no interference, no obligate chiasma
-## str(xoparam)
+## Example: Create crossover-parameters
+n_chr <- 20L  ## number of chromosomes
+L <- runif(n = n_chr, min = 100, max = 300)  ## sample length of chromosomes in cM
+xoparam <- create_xoparam(L)  ## no interference, no obligate chiasma
+str(xoparam)
+str(create_xoparam(L) )
 
+## Genotypic data: number of loci per chromosome and positions.
+n_loci <- round(runif(n = n_chr, min = 1000L, max = 1000L))  ## sample number of loci per chromosome
+## sample positions of loci on the chromosome
+positions <- lapply(seq_len(n_chr), function(i) sort(runif(n_loci[i], min = 0, max = L[i])))
 
-## ## Genotypic data: number of loci per chromosome and positions.
-## n_loci <- round(runif(n = n_chr, min = 1L, max = 1L))  ## sample number of loci per chromosome
-## ## sample positions of loci on the chromosome
-## positions <- lapply(seq_len(n_chr), function(i) sort(runif(n_loci[i], min = 0, max = L[i])))
+## Example 1: Simulate meiosis with genotypes.
+sim_geno <- function(n_loci) {
+  replicate(2L, lapply(n_loci, function(n) sample(c(0L, 1L), n, replace = TRUE)),
+            simplify = FALSE)
+}
 
-## ## Example 1: Simulate meiosis with genotypes.
-## sim_geno <- function(n_loci) {
-##   replicate(2L, lapply(n_loci, function(n) sample(c(0L, 1L), n, replace = TRUE)),
-##             simplify = FALSE)
-## }
+ind <-  sim_geno(n_loci) ## simulate some genotypic data
+str(ind)
 
-## ind <-  sim_geno(n_loci) ## simulate some genotypic data
-## str(ind)
+microbenchmark::microbenchmark(times = 1000 ,
+Meiosis::check_geno_individual(ind),
+dh_geno(ind, positions = positions, xoparam = xoparam),
+dh_geno(ind, positions = positions, xoparam = xoparam, check = TRUE)
+)
 
 ## microbenchmark::microbenchmark(times = 1000 ,
 ##  cross_geno(father = ind, mother = ind, positions = positions, xoparam = xoparam),
@@ -247,9 +253,7 @@ Meiosis::realized_coancestry(Meiosis::dh_xo(exdat$founder, exdat$xoparam),
 ## x <- exdat$ind2
 ## names(x) <- nn
 ## exdat$ind2 <- x
-## devtools::use_data(exdat)
-
-
+## devtools::use_data(exdat, overwrite = TRUE)
 
 ## library('Meiosis')
 
