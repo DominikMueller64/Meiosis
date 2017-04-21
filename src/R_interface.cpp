@@ -14,7 +14,7 @@ std::mt19937 engine;
 const double epsilon = std::sqrt(std::numeric_limits<double>::epsilon());
 
 //' @rdname seed_rng
-// [[Rcpp::export]]
+// // [[Rcpp::export]]
 int seed_rng(const Rcpp::Nullable<int>& seed = R_NilValue)
 {
   int seed_;
@@ -25,7 +25,7 @@ int seed_rng(const Rcpp::Nullable<int>& seed = R_NilValue)
 }
 
 //' @rdname calc_Lstar
-// [[Rcpp::export]]
+// // [[Rcpp::export]]
 double calc_Lstar(const double L,
                   const int m,
                   const double p,
@@ -38,7 +38,7 @@ double calc_Lstar(const double L,
 }
 
 //' @rdname crossover
-// [[Rcpp::export]]
+// // [[Rcpp::export]]
 Rcpp::NumericVector crossover(const double L,
                               const int m,
                               const double p,
@@ -65,7 +65,7 @@ Rcpp::IntegerVector meiosis_geno_(const Rcpp::IntegerVector& patalle,
 }
 
 //' @rdname meiosis_geno
-// [[Rcpp::export]]
+// // [[Rcpp::export]]
 Rcpp::List meiosis_geno(const Rcpp::List& individual,
                         const Rcpp::List& positions,
                         const Rcpp::List& xoparam)
@@ -119,7 +119,7 @@ Rcpp::List meiosis_xo_(const Rcpp::IntegerVector& patalle,
 
 
 //' @rdname meiosis_xo
-// [[Rcpp::export]]
+// // [[Rcpp::export]]
 Rcpp::List meiosis_xo(const Rcpp::List& individual,
                       const Rcpp::List& xoparam)
 {
@@ -147,7 +147,7 @@ Rcpp::List meiosis_xo(const Rcpp::List& individual,
 }
 
 //' @rdname cross_geno
-// [[Rcpp::export]]
+// // [[Rcpp::export]]
 Rcpp::List cross_geno(const Rcpp::List& father,
                       const Rcpp::List& mother,
                       const Rcpp::List& positions,
@@ -161,7 +161,7 @@ Rcpp::List cross_geno(const Rcpp::List& father,
 
 
 //' @rdname cross_xo
-// [[Rcpp::export]]
+// // [[Rcpp::export]]
 Rcpp::List cross_xo(const Rcpp::List& father,
                        const Rcpp::List& mother,
                        const Rcpp::List& xoparam)
@@ -173,7 +173,7 @@ Rcpp::List cross_xo(const Rcpp::List& father,
 }
 
 //' @rdname self_geno
-// [[Rcpp::export]]
+// // [[Rcpp::export]]
 Rcpp::List self_geno(const Rcpp::List& individual,
                      const Rcpp::List& positions,
                      const Rcpp::List& xoparam)
@@ -183,7 +183,7 @@ Rcpp::List self_geno(const Rcpp::List& individual,
 
 
 //' @rdname self_xo
-// [[Rcpp::export]]
+// // [[Rcpp::export]]
 Rcpp::List self_xo(const Rcpp::List& individual,
                    const Rcpp::List& xoparam)
 {
@@ -192,7 +192,7 @@ Rcpp::List self_xo(const Rcpp::List& individual,
 
 
 //' @rdname dh_geno
-// [[Rcpp::export]]
+// // [[Rcpp::export]]
 Rcpp::List dh_geno(const Rcpp::List& individual,
                    const Rcpp::List& positions,
                    const Rcpp::List& xoparam)
@@ -204,7 +204,7 @@ Rcpp::List dh_geno(const Rcpp::List& individual,
 
 
 //' @rdname dh_xo
-// [[Rcpp::export]]
+// // [[Rcpp::export]]
 Rcpp::List dh_xo(const Rcpp::List& individual,
                     const Rcpp::List& xoparam)
 {
@@ -235,13 +235,13 @@ double realized_coancestry_self(const Rcpp::List& individual) {
 }
 
 //' @rdname realized_heter
-// [[Rcpp::export]]
+// // [[Rcpp::export]]
 double realized_heter(const Rcpp::List& individual) {
   return 2 * (1 - realized_coancestry_self(individual));
 }
 
 //' @rdname realized_coancestry
-// [[Rcpp::export]]
+// // [[Rcpp::export]]
 double realized_coancestry(const Rcpp::List& individual_1,
                            const Rcpp::Nullable<Rcpp::List>& individual_2 = R_NilValue) {
 

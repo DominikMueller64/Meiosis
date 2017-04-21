@@ -22,3 +22,5 @@ Suggests: knitr,
     pedigree
 VignetteBuilder: knitr
 LazyData: true
+URL: https://github.com/DominikMueller64/Meiosis
+BugReports: https://github.com/DominikMueller64/Meiosis/issues
