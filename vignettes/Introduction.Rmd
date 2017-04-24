@@ -1,5 +1,5 @@
 ---
-title: "Meiosis: Simulation of meiosis in plant breeding research."
+title: "Meiosis: Simulation of meiosis in plant breeding research"
 author:
 - Dominik Mueller^[University of Hohenheim, Institute of Plant Breeding,
                    Seed Science and Population Genetics, Stuttgart]
@@ -12,7 +12,7 @@ output:
 fontsize: 12pt
 geometry: margin=1in
 vignette: >
-  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteIndexEntry{Meiosis: Simulation of meiosis in plant breeding research}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 header-includes:
