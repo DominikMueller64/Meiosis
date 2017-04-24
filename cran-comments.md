@@ -4,8 +4,9 @@ This is a resubmission. I have:
 * fixed failing unit tests for platforms osx and fedora
 
 ## Test environments
-* local ubuntu 14.04 install, R 3.3.2
+* local ubuntu 14.04 install, R 3.4.0
 * ubuntu 12.04 (on travis-ci), R 3.3.2
+* ubuntu 12.04 (on travis-ci), R 3.3.3
 * ubuntu 12.04 (on travis-ci), R-release 
 * ubuntu 12.04 (on travis-ci), R-devel 
 * win-builder (devel and release)
