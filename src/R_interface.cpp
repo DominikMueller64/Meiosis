@@ -13,7 +13,7 @@ std::random_device rdev;
 std::mt19937 engine;
 const double epsilon = std::sqrt(std::numeric_limits<double>::epsilon());
 
-//' @rdname seed_rng
+// //' @rdname seed_rng
 // // [[Rcpp::export]]
 int seed_rng(const Rcpp::Nullable<int>& seed = R_NilValue)
 {
@@ -24,7 +24,7 @@ int seed_rng(const Rcpp::Nullable<int>& seed = R_NilValue)
   return seed_;
 }
 
-//' @rdname calc_Lstar
+// //' @rdname calc_Lstar
 // // [[Rcpp::export]]
 double calc_Lstar(const double L,
                   const int m,
@@ -37,7 +37,7 @@ double calc_Lstar(const double L,
   return Meiosis::calc_Lstar(L, m, p);
 }
 
-//' @rdname crossover
+// //' @rdname crossover
 // // [[Rcpp::export]]
 Rcpp::NumericVector crossover(const double L,
                               const int m,
@@ -64,7 +64,7 @@ Rcpp::IntegerVector meiosis_geno_(const Rcpp::IntegerVector& patalle,
         patalle, matalle, xlocations, pos, engine);
 }
 
-//' @rdname meiosis_geno
+// //' @rdname meiosis_geno
 // // [[Rcpp::export]]
 Rcpp::List meiosis_geno(const Rcpp::List& individual,
                         const Rcpp::List& positions,
@@ -85,9 +85,6 @@ Rcpp::List meiosis_geno(const Rcpp::List& individual,
   const auto& paternal = Rcpp::as<Rcpp::List>(individual[0]);
   const auto& maternal = Rcpp::as<Rcpp::List>(individual[1]);
   for (std::size_t i = 0; i != L.size(); ++i){
-    // gamete[i] = meiosis_geno_(Rcpp::as<Rcpp::List>(individual[0])[i],
-    //                           Rcpp::as<Rcpp::List>(individual[1])[i],
-    //                           positions[i], L[i], m, p, obligate_chiasma, Lstar[i]);
     gamete[i] = mei(paternal[i], maternal[i],
                     xo(L[i], m, p, obligate_chiasma, Lstar[i], engine),
                     positions[i], engine);
@@ -118,7 +115,7 @@ Rcpp::List meiosis_xo_(const Rcpp::IntegerVector& patalle,
 
 
 
-//' @rdname meiosis_xo
+// //' @rdname meiosis_xo
 // // [[Rcpp::export]]
 Rcpp::List meiosis_xo(const Rcpp::List& individual,
                       const Rcpp::List& xoparam)
@@ -146,7 +143,7 @@ Rcpp::List meiosis_xo(const Rcpp::List& individual,
   return gamete;
 }
 
-//' @rdname cross_geno
+// //' @rdname cross_geno
 // // [[Rcpp::export]]
 Rcpp::List cross_geno(const Rcpp::List& father,
                       const Rcpp::List& mother,
@@ -160,7 +157,7 @@ Rcpp::List cross_geno(const Rcpp::List& father,
 }
 
 
-//' @rdname cross_xo
+// //' @rdname cross_xo
 // // [[Rcpp::export]]
 Rcpp::List cross_xo(const Rcpp::List& father,
                        const Rcpp::List& mother,
@@ -172,7 +169,7 @@ Rcpp::List cross_xo(const Rcpp::List& father,
                             Rcpp::Named("maternal") = mat);
 }
 
-//' @rdname self_geno
+// //' @rdname self_geno
 // // [[Rcpp::export]]
 Rcpp::List self_geno(const Rcpp::List& individual,
                      const Rcpp::List& positions,
@@ -182,7 +179,7 @@ Rcpp::List self_geno(const Rcpp::List& individual,
 }
 
 
-//' @rdname self_xo
+// //' @rdname self_xo
 // // [[Rcpp::export]]
 Rcpp::List self_xo(const Rcpp::List& individual,
                    const Rcpp::List& xoparam)
@@ -191,7 +188,7 @@ Rcpp::List self_xo(const Rcpp::List& individual,
 }
 
 
-//' @rdname dh_geno
+// //' @rdname dh_geno
 // // [[Rcpp::export]]
 Rcpp::List dh_geno(const Rcpp::List& individual,
                    const Rcpp::List& positions,
@@ -203,7 +200,7 @@ Rcpp::List dh_geno(const Rcpp::List& individual,
 }
 
 
-//' @rdname dh_xo
+// //' @rdname dh_xo
 // // [[Rcpp::export]]
 Rcpp::List dh_xo(const Rcpp::List& individual,
                     const Rcpp::List& xoparam)
@@ -234,13 +231,13 @@ double realized_coancestry_self(const Rcpp::List& individual) {
   return 0.5 * (1 + tot / len);
 }
 
-//' @rdname realized_heter
+// //' @rdname realized_heter
 // // [[Rcpp::export]]
 double realized_heter(const Rcpp::List& individual) {
   return 2 * (1 - realized_coancestry_self(individual));
 }
 
-//' @rdname realized_coancestry
+// //' @rdname realized_coancestry
 // // [[Rcpp::export]]
 double realized_coancestry(const Rcpp::List& individual_1,
                            const Rcpp::Nullable<Rcpp::List>& individual_2 = R_NilValue) {
