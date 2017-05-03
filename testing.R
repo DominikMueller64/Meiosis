@@ -7,10 +7,15 @@ platform <- c('debian-gcc-devel', "debian-gcc-release",
               "windows-x86_64-devel", "windows-x86_64-release")
 
 rhub_check <- rhub::check(platform = platform,
-                          valgrind = TRUE,
+                          valgrind = FALSE,
                           check_args = "--as-cran",
                           env_vars = c(`_R_CHECK_FORCE_SUGGESTS_` = "true"),
                           show_status = FALSE)
+length(rhub_check)
+names(rhub_check)
+rhub_check$livelog()
+
+
 ?rhub::check_with_sanitizers
 rhub:::check_shortcut_platforms $sanitizers
 
