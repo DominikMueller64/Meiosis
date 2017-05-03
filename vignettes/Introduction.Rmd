@@ -324,7 +324,7 @@ system.time(syn <- make_synthetic(founder, n_ind, n_gen))
 ### Example 5: Computation of realized coefficients of co-ancestry.
 Here, we calculate realized coefficient of co-ancestry. These are analogous to the classical
 co-ancestry coefficients but take into account variation due to Mendelian sampling.
-```{r}
+```{r, purl = FALSE}
 ## Calculate realized coefficients of co-ancestry.
 Meiosis::realized_coancestry(f)
 Meiosis::realized_coancestry(p_xo)  ## selfing progeny, expected coefficient is 0.75.
@@ -338,7 +338,7 @@ between individuals. We therefore simulate a small pedigree and used the package
 [pedigree](https://CRAN.R-project.org/package=pedigree) to compute additive
 genetic relationships.
 
-```{r}
+```{r, purl = TRUE}
 library('pedigree')
 
 ## Create a simple pedigree
@@ -395,7 +395,7 @@ str(conv$convert(Meiosis::dh_xo(f, xoparam)))
 We can also compute the realized heterozygosity of an individual, i.e., the proportion of
 the genome that is heterozygous with respect to the founder alleles present.
 
-```{r}
+```{r, purl = TRUE}
 ## Calculate realized heterozygosity.
 Meiosis::realized_heter(p_xo) 
 ```

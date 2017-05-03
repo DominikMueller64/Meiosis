@@ -65,11 +65,26 @@ bool check_positions(const T& x)
   return *x.begin() >= 0.0 && is_sorted(x, true, true);
 }
 
-
-Converter::Converter(t_positions positions){
+Converter::Converter(t_positions positions):
+  use_names(false)
+{
 
   for (const auto& pos: positions) {
-    if (!check_positions<std::vector<double> >(pos)) {
+    if (!check_positions<Rcpp::NumericVector>(pos)) {
+      throw std::runtime_error("Some positions are not as requested. "
+                               "(non-zero and strictly increasing)");
+    }
+  }
+
+  this->positions = positions;
+}
+
+Converter::Converter(t_positions positions, bool use_names):
+  use_names(use_names)
+{
+
+  for (const auto& pos: positions) {
+    if (!check_positions<Rcpp::NumericVector>(pos)) {
       throw std::runtime_error("Some positions are not as requested. "
                                "(non-zero and strictly increasing)");
     }
@@ -148,8 +163,8 @@ void Converter::insert_gamete(int key, t_gamete gamete)
   }
   else { // not empty
     if (size() != gamete.size())
-      Rcpp::stop("The length of 'value' is not conformable.");
-    for (std::size_t i{0}; i != size(); ++i) {
+      throw std::runtime_error("The length of 'value' is not conformable.");
+    for (std::size_t i = 0; i < size(); ++i) {
       auto& map = mapvec[i];
       if (map.find(key) != map.end()) // element already exists
         map.erase(key); // erase if it exists and insert new one
@@ -160,11 +175,21 @@ void Converter::insert_gamete(int key, t_gamete gamete)
 
 Rcpp::List Converter::convert_gamete(const Rcpp::List& gamete)
 {
-  const auto& f = Meiosis::convert<Rcpp::IntegerVector, Rcpp::NumericVector, vec>;
+  // const auto& f = Meiosis::convert<Rcpp::IntegerVector, Rcpp::NumericVector, vec>;
+  const auto& f = Meiosis::convert<Rcpp::IntegerVector, Rcpp::NumericVector, Rcpp::NumericVector>;
   Rcpp::List new_gam(gamete.size());
-  for (size_t k = 0; k != gamete.size(); ++k) {
+  for (std::size_t k = 0; k < gamete.size(); ++k) {
     const Rcpp::List& chr = gamete[k];
-    new_gam[k] = f(chr[0], chr[1], positions[k], mapvec[k]);
+    const auto& pos = positions[k];
+    auto new_chr = f(chr[0], chr[1], pos, mapvec[k]);
+
+    if (use_names) {
+      if (pos.hasAttribute("names")) {
+        new_chr.names() = pos.names();
+      }
+    }
+
+    new_gam[k] = new_chr;
   }
   return new_gam;
 }
@@ -175,7 +200,7 @@ Rcpp::List Converter::convert(const Rcpp::List& individual)
 
   const auto& n_gam = individual.size();
   Rcpp::List new_ind(n_gam);
-  for (size_t g = 0; g != n_gam; ++g) {
+  for (std::size_t g = 0; g < n_gam; ++g) {
     new_ind[g] = convert_gamete(individual[g]);
   }
   return new_ind;

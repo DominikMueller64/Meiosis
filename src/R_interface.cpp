@@ -13,8 +13,8 @@ std::random_device rdev;
 std::mt19937 engine;
 const double epsilon = std::sqrt(std::numeric_limits<double>::epsilon());
 
-// //' @rdname seed_rng
-// // [[Rcpp::export]]
+//' @rdname seed_rng
+// [[Rcpp::export]]
 int seed_rng(const Rcpp::Nullable<int>& seed = R_NilValue)
 {
   int seed_;
@@ -24,8 +24,8 @@ int seed_rng(const Rcpp::Nullable<int>& seed = R_NilValue)
   return seed_;
 }
 
-// //' @rdname calc_Lstar
-// // [[Rcpp::export]]
+//' @rdname calc_Lstar
+// [[Rcpp::export]]
 double calc_Lstar(const double L,
                   const int m,
                   const double p,
@@ -37,8 +37,8 @@ double calc_Lstar(const double L,
   return Meiosis::calc_Lstar(L, m, p);
 }
 
-// //' @rdname crossover
-// // [[Rcpp::export]]
+//' @rdname crossover
+// [[Rcpp::export]]
 Rcpp::NumericVector crossover(const double L,
                               const int m,
                               const double p,
@@ -49,26 +49,62 @@ Rcpp::NumericVector crossover(const double L,
   return Meiosis::crossover<Rcpp::NumericVector>(L, m, p, obligate_chiasma, Lstar, engine);
 }
 
+// [[Rcpp::export(".meiosis_geno_")]]
 Rcpp::IntegerVector meiosis_geno_(const Rcpp::IntegerVector& patalle,
                                   const Rcpp::IntegerVector& matalle,
+                                  const std::vector<double>& xlocations,
                                   const Rcpp::NumericVector& pos,
-                                  const double L,
-                                  const int m,
-                                  const double p,
-                                  const bool obligate_chiasma,
-                                  const double Lstar
-                                  )
+                                  const bool& use_names)
 {
-  const auto& xlocations = Meiosis::crossover<std::vector<double>>(L, m, p, obligate_chiasma, Lstar, engine);
-  return Meiosis::meiosis_geno<Rcpp::IntegerVector, std::vector<double>, Rcpp::NumericVector>(
-        patalle, matalle, xlocations, pos, engine);
+  const auto& mei = Meiosis::meiosis_geno<Rcpp::IntegerVector, std::vector<double>, Rcpp::NumericVector>;
+
+  auto gam = mei(patalle, matalle, xlocations, pos, engine);
+  if (use_names) {
+    if (patalle.hasAttribute("names")) {
+      gam.names() = patalle.names();
+    } else if (matalle.hasAttribute("names")) {
+      gam.names() = matalle.names();
+    } else if (pos.hasAttribute("names")){
+      gam.names() = pos.names();
+    }
+  }
+
+  return gam;
 }
 
+// // [[Rcpp::export(".meiosis_geno_test")]]
+// Rcpp::List  meiosis_geno_test(const Rcpp::List& individual,
+//                        const Rcpp::List& positions,
+//                        const Rcpp::List& xoparam,
+//                        const bool& use_names = false) {
+
+//   const auto& L = Rcpp::as<Rcpp::NumericVector>(xoparam[0]);
+//   const auto& m = Rcpp::as<int>(xoparam[1]);
+//   const auto& p = Rcpp::as<double>(xoparam[2]);
+//   const auto& obligate_chiasma = Rcpp::as<bool>(xoparam[3]);
+//   const auto& Lstar = Rcpp::as<Rcpp::NumericVector>(xoparam[4]);
+//   const auto& xo = Meiosis::crossover<std::vector<double>>;
+//   const auto& mei = Meiosis::meiosis_geno<Rcpp::IntegerVector,
+//                                           std::vector<double>,
+//                                           Rcpp::NumericVector>;
+
+//   Rcpp::List gamete(L.size());
+//   const auto& paternal = Rcpp::as<Rcpp::List>(individual[0]);
+//   const auto& maternal = Rcpp::as<Rcpp::List>(individual[1]);
+//   for (std::size_t i = 0; i < L.size(); ++i){
+//     gamete[i] = meiosis_geno_(paternal[i], maternal[i],
+//                               xo(L[i], m, p, obligate_chiasma, Lstar[i], engine),
+//                               positions[i], use_names);
+//   }
+//   return gamete;
+// }
+
 // //' @rdname meiosis_geno
-// // [[Rcpp::export]]
+// [[Rcpp::export(".meiosis_geno")]]
 Rcpp::List meiosis_geno(const Rcpp::List& individual,
                         const Rcpp::List& positions,
-                        const Rcpp::List& xoparam)
+                        const Rcpp::List& xoparam,
+                        const bool& use_names = false)
 {
   const auto& L = Rcpp::as<Rcpp::NumericVector>(xoparam[0]);
   const auto& m = Rcpp::as<int>(xoparam[1]);
@@ -81,42 +117,38 @@ Rcpp::List meiosis_geno(const Rcpp::List& individual,
                                           Rcpp::NumericVector>;
 
   Rcpp::List gamete(L.size());
-
   const auto& paternal = Rcpp::as<Rcpp::List>(individual[0]);
   const auto& maternal = Rcpp::as<Rcpp::List>(individual[1]);
-  for (std::size_t i = 0; i != L.size(); ++i){
-    gamete[i] = mei(paternal[i], maternal[i],
-                    xo(L[i], m, p, obligate_chiasma, Lstar[i], engine),
-                    positions[i], engine);
-
+  for (std::size_t i = 0; i < L.size(); ++i){
+    gamete[i] = meiosis_geno_(paternal[i], maternal[i],
+                              xo(L[i], m, p, obligate_chiasma, Lstar[i], engine),
+                              positions[i], use_names);
   }
   return gamete;
 }
 
+// This function is only for testing!
+// [[Rcpp::export(".meiosis_xo_")]]
 Rcpp::List meiosis_xo_(const Rcpp::IntegerVector& patalle,
-                         const Rcpp::NumericVector& patloc,
-                         const Rcpp::IntegerVector& matalle,
-                         const Rcpp::NumericVector& matloc,
-                         const double L,
-                         const int m,
-                         const double p,
-                         const bool obligate_chiasma,
-                         const double Lstar
-                         )
+                       const Rcpp::NumericVector& patloc,
+                       const Rcpp::IntegerVector& matalle,
+                       const Rcpp::NumericVector& matloc,
+                       const std::vector<double>& xlocations
+                       )
 {
-  const auto& xlocations = Meiosis::crossover<Rcpp::NumericVector>(L, m, p, obligate_chiasma, Lstar, engine);
-  const auto& ret = Meiosis::meiosis_xodat<Rcpp::IntegerVector,
+  const auto& mei = Meiosis::meiosis_xodat<Rcpp::IntegerVector,
                                            Rcpp::NumericVector,
-                                           Rcpp::NumericVector>(
-       patalle, patloc, matalle, matloc, xlocations, engine);
+                                           std::vector<double>>;
+
+  auto gam = mei(patalle, patloc, matalle, matloc, xlocations, engine);
+  const auto& ret = mei(patalle, patloc, matalle, matloc, xlocations, engine);
   return Rcpp::List::create(Rcpp::Named("alleles") = ret.first,
                             Rcpp::Named("locations") = ret.second);
 }
 
 
-
 // //' @rdname meiosis_xo
-// // [[Rcpp::export]]
+// [[Rcpp::export(".meiosis_xo")]]
 Rcpp::List meiosis_xo(const Rcpp::List& individual,
                       const Rcpp::List& xoparam)
 {
@@ -133,7 +165,7 @@ Rcpp::List meiosis_xo(const Rcpp::List& individual,
                                            Rcpp::NumericVector,
                                            std::vector<double>>;
   Rcpp::List gamete(L.size());
-  for (std::size_t i = 0; i != L.size(); ++i){
+  for (std::size_t i = 0; i < L.size(); ++i){
     const Rcpp::List& pat = paternal[i];
     const Rcpp::List& mat = maternal[i];
     const auto& xlocations = xo(L[i], m, p, obligate_chiasma, Lstar[i], engine);
@@ -144,21 +176,22 @@ Rcpp::List meiosis_xo(const Rcpp::List& individual,
 }
 
 // //' @rdname cross_geno
-// // [[Rcpp::export]]
+// [[Rcpp::export(".cross_geno")]]
 Rcpp::List cross_geno(const Rcpp::List& father,
                       const Rcpp::List& mother,
                       const Rcpp::List& positions,
-                      const Rcpp::List& xoparam)
+                      const Rcpp::List& xoparam,
+                      const bool& use_names = false)
 {
-  const auto& pat = meiosis_geno(father, positions, xoparam);
-  const auto& mat = meiosis_geno(mother, positions, xoparam);
+  const auto& pat = meiosis_geno(father, positions, xoparam, use_names);
+  const auto& mat = meiosis_geno(mother, positions, xoparam, use_names);
   return Rcpp::List::create(Rcpp::Named("paternal") = pat,
                             Rcpp::Named("maternal") = mat);
 }
 
 
 // //' @rdname cross_xo
-// // [[Rcpp::export]]
+// [[Rcpp::export(".cross_xo")]]
 Rcpp::List cross_xo(const Rcpp::List& father,
                        const Rcpp::List& mother,
                        const Rcpp::List& xoparam)
@@ -170,17 +203,18 @@ Rcpp::List cross_xo(const Rcpp::List& father,
 }
 
 // //' @rdname self_geno
-// // [[Rcpp::export]]
+// [[Rcpp::export(".self_geno")]]
 Rcpp::List self_geno(const Rcpp::List& individual,
                      const Rcpp::List& positions,
-                     const Rcpp::List& xoparam)
+                     const Rcpp::List& xoparam,
+                     const bool& use_names = false)
 {
-  return cross_geno(individual, individual, positions, xoparam);
+  return cross_geno(individual, individual, positions, xoparam, use_names);
 }
 
 
 // //' @rdname self_xo
-// // [[Rcpp::export]]
+// [[Rcpp::export(".self_xo")]]
 Rcpp::List self_xo(const Rcpp::List& individual,
                    const Rcpp::List& xoparam)
 {
@@ -189,19 +223,20 @@ Rcpp::List self_xo(const Rcpp::List& individual,
 
 
 // //' @rdname dh_geno
-// // [[Rcpp::export]]
+// [[Rcpp::export(".dh_geno")]]
 Rcpp::List dh_geno(const Rcpp::List& individual,
                    const Rcpp::List& positions,
-                   const Rcpp::List& xoparam)
+                   const Rcpp::List& xoparam,
+                   const bool& use_names = false)
 {
-  const auto& gam = meiosis_geno(individual, positions, xoparam);
+  const auto& gam = meiosis_geno(individual, positions, xoparam, use_names);
   return Rcpp::List::create(Rcpp::Named("paternal") = gam,
                             Rcpp::Named("maternal") = gam);
 }
 
 
 // //' @rdname dh_xo
-// // [[Rcpp::export]]
+// [[Rcpp::export(".dh_xo")]]
 Rcpp::List dh_xo(const Rcpp::List& individual,
                     const Rcpp::List& xoparam)
 {
@@ -232,13 +267,13 @@ double realized_coancestry_self(const Rcpp::List& individual) {
 }
 
 // //' @rdname realized_heter
-// // [[Rcpp::export]]
+// [[Rcpp::export(".realized_heter")]]
 double realized_heter(const Rcpp::List& individual) {
   return 2 * (1 - realized_coancestry_self(individual));
 }
 
 // //' @rdname realized_coancestry
-// // [[Rcpp::export]]
+// [[Rcpp::export(".realized_coancestry")]]
 double realized_coancestry(const Rcpp::List& individual_1,
                            const Rcpp::Nullable<Rcpp::List>& individual_2 = R_NilValue) {
 
@@ -273,3 +308,4 @@ double realized_coancestry(const Rcpp::List& individual_1,
    }
    return tot / (4.0 * len);
 }
+

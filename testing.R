@@ -1,5 +1,90 @@
-library(Meiosis)
+library('rhub')
+print(rhub::platforms()$name)
+platform <- c('debian-gcc-devel', "debian-gcc-release",
+              "fedora-clang-devel", "fedora-gcc-devel",
+              "linux-x86_64-rocker-gcc-san",
+              "ubuntu-gcc-devel", "ubuntu-gcc-release",
+              "windows-x86_64-devel", "windows-x86_64-release")
+
+rhub_check <- rhub::check(platform = platform,
+                          valgrind = TRUE,
+                          check_args = "--as-cran",
+                          env_vars = c(`_R_CHECK_FORCE_SUGGESTS_` = "true"),
+                          show_status = FALSE)
+?rhub::check_with_sanitizers
+rhub:::check_shortcut_platforms $sanitizers
+
+library('Meiosis')
+set.seed(123L) ## Seed R's rng
+Meiosis::seed_rng(seed = 123L) ## Seed rng used by Meiosis
+
+n_chr <- 3L  ## number of chromosomes
+L <- runif(n = n_chr, min = 100, max = 300)  ## sample length of chromosomes in cM
+xoparam <- create_xoparam(L)  ## no interference, no obligate chiasma
+str(xoparam)
+
+n_loci <- round(runif(n = n_chr, min = 5L, max = 10L))  ## sample number of loci
+## sample positions of loci on the chromosome
+positions <- lapply(seq_len(n_chr), function(i) sort(runif(n_loci[i], min = 0, max = L[i])))
+
+
+f_alleles <- c(21L, 65L) ## 21 and 65 are arbitrary integers
+f <- Meiosis::create_xo_founder(alleles = f_alleles, L = L)
+p_xo <- Meiosis::cross_xo(father = f, mother = f, xoparam = xoparam)
+
+
+ind <- replicate(2L, lapply(n_loci, function(n) sample(c(0L, 1L), n, replace = TRUE)),
+                 simplify = FALSE) ## simulate some genotypic data
+
+# add names
+positions <- lapply(positions, function(x) {names(x) <- sample(letters,size=length(x),T);x})
+
+
+conv <- new(Meiosis::Converter, positions) ## create a new converter object
+conv$size()
+conv$insert_founder(f_alleles, ind) ## insert the (one and only) founder
+str(conv$convert(p_xo)) ## convert the progeny
+
+
+## ind <- replicate(2L, lapply(n_loci, function(n) sample(c(0L, 1L), n, replace = TRUE)),
+##                  simplify = FALSE) ## simulate some genotypic data
+## str(ind)
+
+
+## Meiosis:::.meiosis_geno(ind, positions, xoparam)
+## .Call('Meiosis_meiosis_geno', PACKAGE = 'Meiosis', ind, positions, xoparam, FALSE)
+## Meiosis:::meiosis_geno(ind, positions, xoparam)
+
+## Meiosis:::.meiosis_geno_(patalle = ind[[1]][[1]], matalle = ind[[1]][[1]], c(1, 100),
+##                          pos = positions[[1]], T)
+
+## Meiosis::meiosis_geno(ind, positions = positions, xoparam = xoparam, TRUE)
+
+
+## names(ind[[1]][[1]]) <- letters[1:9]
+## p_geno <- Meiosis::cross_geno(father = ind, mother = ind, positions = positions,
+##                               xoparam = xoparam, TRUE, TRUE)
+## str(p_geno)
+
+
+
+
+
+
 data(exdat, package = 'Meiosis')
+str(exdat)
+
+Meiosis::crossover(L = 100, m = 0L, p = 1, obligate_chiasma = FALSE, Lstar = 100)
+
+
+patalle <- exdat$ind$paternal[[1L]]
+matalle <- exdat$ind$maternal[[1L]]
+pos <- exdat$positions[[1L]]
+xlocations <- sort(runif(n = 5L, min = min(pos), max = max(pos)))
+Meiosis:::meiosis_geno_(patalle, matalle, xlocations, pos, FALSE)
+
+.Call('Meiosis_meiosis_geno_', PACKAGE = 'Meiosis', patalle, matalle, xlocations, pos, FALSE)
+
 Meiosis::realized_coancestry(Meiosis::dh_xo(exdat$founder, exdat$xoparam),
                              Meiosis::dh_xo(exdat$founder, exdat$xoparam))
 

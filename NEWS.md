@@ -1,4 +1,7 @@
-# Meiosis 1.x.x
+# Meiosis 1.0.2
+
+## Improvements
+* loci names are can be automatically added if available
 
 # Meiosis 1.0.1
 

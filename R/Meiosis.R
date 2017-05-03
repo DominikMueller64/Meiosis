@@ -106,16 +106,24 @@ NULL
 #' @param individual List. Individual.
 #' @param positions List. Genetic positions.
 #' @param xoparam List. Crossover parameters.
+#' @param use_names Logical. Should loci names be preserved if present?
 #' @param check Logical. Should checks be performed?
 #'
 #' @return List. A new gamete.
 #'
 #' @examples
 #' data(exdat, package = 'Meiosis')
-#' Meiosis::meiosis_geno(exdat$ind, exdat$positions, exdat$xoparam)
+#' Meiosis::meiosis_geno(exdat$ind, exdat$positions, exdat$xoparam, TRUE, TRUE)
 #'
 #' @export
-NULL
+meiosis_geno <- function(individual, positions, xoparam, use_names = FALSE, check = FALSE) {
+  if (check) {
+    check_geno_individual(individual)
+    check_positions(positions)
+    check_xoparam(xoparam)
+  }
+  .Call('Meiosis_meiosis_geno', PACKAGE = 'Meiosis', individual, positions, xoparam, use_names)
+}
 
 
 #' @name cross_geno
@@ -127,6 +135,7 @@ NULL
 #' @param mother List. Mother.
 #' @param positions List. Genetic positions.
 #' @param xoparam List. Crossover parameters.
+#' @param use_names Logical. Should loci names be preserved if present?
 #' @param check Logical. Should checks be performed?
 #'
 #' @return List. A new individual.
@@ -136,7 +145,15 @@ NULL
 #' Meiosis::cross_geno(exdat$ind, exdat$ind2, exdat$positions, exdat$xoparam)
 #'
 #' @export
-NULL
+cross_geno <- function(father, mother, positions, xoparam, use_names = FALSE, check = FALSE) {
+  if (check) {
+    check_geno_individual(father)
+    check_geno_individual(mother)
+    check_positions(positions)
+    check_xoparam(xoparam)
+  }
+    .Call('Meiosis_cross_geno', PACKAGE = 'Meiosis', father, mother, positions, xoparam, use_names)
+}
 
 #' @name self_geno
 #' @title Produce selfing (genotypic representation)
@@ -146,6 +163,7 @@ NULL
 #' @param individual List. Individual.
 #' @param positions List. Genetic positions.
 #' @param xoparam List. Crossover parameters.
+#' @param use_names Logical. Should loci names be preserved if present?
 #' @param check Logical. Should checks be performed?
 #'
 #' @return List. A new individual.
@@ -155,7 +173,14 @@ NULL
 #' Meiosis::self_geno(exdat$ind, exdat$positions, exdat$xoparam)
 #'
 #' @export
-NULL
+self_geno <- function(individual, positions, xoparam, use_names = FALSE, check = FALSE) {
+  if (check) {
+    check_geno_individual(individual)
+    check_positions(positions)
+    check_xoparam(xoparam)
+  }
+  .Call('Meiosis_self_geno', PACKAGE = 'Meiosis', individual, positions, xoparam, use_names)
+}
 
 
 #' @name dh_geno
@@ -166,6 +191,7 @@ NULL
 #' @param individual List. Individual.
 #' @param positions List. Genetic positions.
 #' @param xoparam List. Crossover parameters.
+#' @param use_names Logical. Should loci names be preserved if present?
 #' @param check Logical. Should checks be performed?
 #'
 #' @return List. A new individual.
@@ -175,7 +201,14 @@ NULL
 #' Meiosis::dh_geno(exdat$ind, exdat$positions, exdat$xoparam)
 #'
 #' @export
-NULL
+dh_geno <- function(individual, positions, xoparam, use_names = FALSE, check = FALSE) {
+  if (check) {
+    check_geno_individual(individual)
+    check_positions(positions)
+    check_xoparam(xoparam)
+  }
+    .Call('Meiosis_dh_geno', PACKAGE = 'Meiosis', individual, positions, xoparam, use_names)
+}
 
 #' @name meiosis_xo
 #' @title Simulate meiosis (segmental representation)
@@ -193,8 +226,13 @@ NULL
 #' Meiosis::meiosis_xo(exdat$founder, exdat$xoparam)
 #'
 #' @export
-NULL
-
+meiosis_xo <- function(individual, xoparam, check = FALSE) {
+  if (check) {
+    check_xo_individual(individual)
+    check_xoparam(xoparam)
+  }
+  .Call('Meiosis_meiosis_xo', PACKAGE = 'Meiosis', individual, xoparam)
+}
 
 #' @name cross_xo
 #' @title Cross individuals (segmental representation)
@@ -213,7 +251,14 @@ NULL
 #' Meiosis::cross_xo(exdat$founder, exdat$founder2, exdat$xoparam)
 #'
 #' @export
-NULL
+cross_xo <- function(father, mother, xoparam, check = FALSE) {
+  if (check) {
+    check_xo_individual(father)
+    check_xo_individual(mother)
+    check_xoparam(xoparam)
+  }
+  .Call('Meiosis_cross_xo', PACKAGE = 'Meiosis', father, mother, xoparam)
+}
 
 #' @name self_xo
 #' @title Produce selfing (segmental representation)
@@ -231,8 +276,13 @@ NULL
 #' Meiosis::self_xo(exdat$founder, exdat$xoparam)
 #'
 #' @export
-NULL
-
+self_xo <- function(individual, xoparam, check = FALSE) {
+  if (check) {
+    check_xo_individual(individual)
+    check_xoparam(xoparam)
+  }
+  .Call('Meiosis_self_xo', PACKAGE = 'Meiosis', individual, xoparam)
+}
 
 #' @name dh_xo
 #' @title Produce doubled haploid (segmental representation)
@@ -250,7 +300,13 @@ NULL
 #' Meiosis::dh_xo(exdat$founder, exdat$xoparam)
 #'
 #' @export
-NULL
+dh_xo <- function(individual, xoparam, check = FALSE) {
+  if (check) {
+    check_xo_individual(individual)
+    check_xoparam(xoparam)
+  }
+  .Call('Meiosis_dh_xo', PACKAGE = 'Meiosis', individual, xoparam)
+}
 
 #' @name realized_coancestry
 #' @title Compute co-ancestry
@@ -269,12 +325,20 @@ NULL
 #' individuals, are identical-by-descent (as specified by origins of founder alleles).
 #'
 #' @examples
+##' \dontrun{
 #' data(exdat, package = 'Meiosis')
 #' Meiosis::realized_coancestry(Meiosis::dh_xo(exdat$founder, exdat$xoparam),
 #'                              Meiosis::dh_xo(exdat$founder, exdat$xoparam))
+##' }
 #'
 #' @export
-NULL
+realized_coancestry <- function(individual_1, individual_2 = NULL, check = FALSE) {
+  if (check) {
+    check_xo_individual(individual_1)
+    check_xo_individual(individual_2)
+  }
+  .Call('Meiosis_realized_coancestry', PACKAGE = 'Meiosis', individual_1, individual_2)
+}
 
 #' @name realized_heter
 #' @title Compute realized heterozygosity.
@@ -288,11 +352,18 @@ NULL
 #' @return double. Realized heterozygosity.
 #'
 #' @examples
+##' \dontrun{
 #' data(exdat, package = 'Meiosis')
 #' Meiosis::realized_heter(Meiosis::cross_xo(exdat$founder, exdat$founder, exdat$xoparam))
+##' }
 #'
 #' @export
-NULL
+realized_heter <- function(individual, check = FALSE) {
+  if (check) {
+    check_xo_individual(individual)
+  }
+  .Call('Meiosis_realized_heter', PACKAGE = 'Meiosis', individual)
+}
 
 #' @name exdat
 #' @title Example data

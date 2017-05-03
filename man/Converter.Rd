@@ -12,5 +12,11 @@ documentation with \code{help(Converter$insert_founder)} and code{help(Converter
 Before starting conversion, all founder alleles and founder genotypes have to be added via
 the method \code{insert_founder}. Conversion is then done by the method \code{convert}.
 
+The constructor has two parameters, \code{positions} and \code{use_names}
+(optional, defaults to \code{FALSE}).
+Parameter \code{positions} must be a list of vectors with the genetic positions.
+If these vectors are named, and if \code{use_names} is \code{TRUE},
+the result of a conversion via \code{convert} will also be named.
+
 Please see the vignette (\code{vignette('Meiosis', package = 'Meiosis')}) for an example.
 }

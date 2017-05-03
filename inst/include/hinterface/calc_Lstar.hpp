@@ -42,8 +42,9 @@ namespace calc_Lstar_ns {
     }
 
     private:
-      double L, p;
+      double L;
       int m;
+      double p;
       func_t f;
   };
 
