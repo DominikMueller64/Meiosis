@@ -4,38 +4,37 @@
 #' Create a parameter list for simulating crossover locations on a single meiotic product
 #' using the Stahl model.
 #'
-#' @details Chiasma locations are a superposition of two
-#' processes: a proportion p exhibiting no interference, and a
-#' proportion (1-p) following the chi-square model with interference
-#' parameter m.  Crossover locations are derived by thinning the
-#' chiasma locations with probability 1/2.
-#'
-#' @param L A vector with chromosome lengths in CentiMorgan of chr in cM.
-#' @param m An integer specifyin the interference parameter (\code{m = 0} is no interference).
-#' @param p Proportion of chiasmata from no-interference mechanism.
+#' @param L Double vector. Chromosome lengths in CentiMorgan (cM).
+#' @param m Integer. The interference parameter (\code{m = 0} is no interference).
+#' @param p Double. Proportion of chiasmata from no-interference mechanism.
 #' (\code{p = 0} gives pure chi-square model)
-#' @param obligate_chiasma If TRUE, require an obligate chiasma on the
+#' @param obligate_chiasma Logical. If TRUE, require an obligate chiasma on the
 #' 4-strand bundle at meiosis. Only possible if all chromosomes are longer than 50 cM.
 #'
 #' @return A nested list as long as the number of chromosomes with parameters used for
 #' simulating crossover events.
 #'
-#' @details Simulations are under the Stahl model with the
+#' @section Model:
+#' Chiasma locations are a superposition of two
+#' processes: a proportion p exhibiting no interference, and a
+#' proportion \code{(1 - p)} following the chi-square model with interference
+#' parameter m.  Crossover locations are derived by thinning the
+#' chiasma locations with probability \code{1/2}.
+#'
+#' Simulations are under the Stahl model with the
 #' interference parameter being an integer. This is an extension of
 #' the chi-square model, but with chiasmata being the superposition of
 #' two processes, one following the chi-square model and the other
 #' exhibiting no interference.
 #'
+#' @details
 #' If \code{obligate_chiasma = TRUE} and all chromsome are longer than 50 cM, reduced
 #' chromosome length with be internally calculated (\code{calc_Lstar}) that will give the
 #' target expected number of chiasmata when conditioning on there being at least one
 #' chiasma on the four-strand bundle.
 #'
-#' @author Dominik Mueller (\email{dominikmueller64@yahoo.de}),
-#' description mostly taken from the \href{https://github.com/kbroman/simcross}{simcross}
+#' This description is adopted from the \href{https://github.com/kbroman/simcross}{simcross}
 #' package.
-#'
-#' @seealso \code{\link{calc_Lstar}}
 #'
 #' @references
 #' Copenhaver, G. P., Housworth, E. A. and Stahl, F. W. (2002) Crossover

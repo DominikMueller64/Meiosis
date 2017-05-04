@@ -1,15 +1,13 @@
 #' Create founders with crossover-data.
 #'
 #' Create founders with crossover-data.
-#' @param alleles Integer Vector of length 2, giving founder alleles.
-#' @param L Numeric vector of chromosome lengths in cM.
+#' @param alleles Integer vector of length 2, giving founder alleles.
+#' @param L Double vector. Chromosome lengths in cM.
 #'
 #' @return A nested list. The first level refers to gametes, the second
 #' to chromosomes.
 #'
 #' @seealso \code{\link{cross_xo}}, \code{\link{meiosis_xo}}
-#'
-#' @author Dominik Mueller (\email{dominikmueller64@yahoo.de})
 #'
 #' @examples
 #' create_xo_founder(alleles = c(-5L, 54L), L = c(32.2, 65.3, 88.2))

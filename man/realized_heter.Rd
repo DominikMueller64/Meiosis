@@ -7,7 +7,7 @@
 realized_heter(individual, check = FALSE)
 }
 \arguments{
-\item{individual}{List. Individual.}
+\item{individual}{List. Individual in segmental representation.}
 
 \item{check}{Logical. Should checks be performed?}
 }

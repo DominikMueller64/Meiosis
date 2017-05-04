@@ -7,15 +7,15 @@
 realized_coancestry(individual_1, individual_2 = NULL, check = FALSE)
 }
 \arguments{
-\item{individual_1}{List. A first Individual.}
+\item{individual_1}{List. A first Individual in segmental representation.}
 
-\item{individual_2}{List. A second Individual. If \code{NULL}, self-relationship of
-\code{individual_1} is computed.}
+\item{individual_2}{List. A second Individual in segmental representation.
+If \code{NULL}, self-co-ancestry of \code{individual_1} is computed.}
 
 \item{check}{Logical. Should checks be performed?}
 }
 \value{
-double. Realized coefficient of co-ancestry.
+Double. Realized coefficient of co-ancestry.
 }
 \description{
 Compute the realized coefficient of co-ancestry between two individuals.

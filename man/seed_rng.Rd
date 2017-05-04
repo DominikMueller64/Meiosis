@@ -3,19 +3,23 @@
 \name{seed_rng}
 \alias{seed_rng}
 \alias{seed_rng}
-\title{Seed the random number generator.}
+\title{Seed the random number generator of the C++ routines.}
 \usage{
 seed_rng(seed = NULL)
 }
 \arguments{
-\item{seed}{Integer (default = \code{NULL}). If \code{NULL}, a random seed is used.}
+\item{seed}{Integer. If \code{NULL}, a random seed is used.}
 }
 \value{
-Integer. The used seed.
+Integer. The seed used.
 }
 \description{
-A Mersenne Twister pseudo-random generator of 32-bit numbers with a state size of
-10037 bits is used.
+A Mersenne Twister pseudo-random generator of 32-bit numbers
+with a state size of 10037 bits is used in the underlying C++ routines.
+}
+\details{
+The state of the random number generator used by the C++ routines is not
+shared with the \code{R} session from which these routines are interfaced.
 }
 \examples{
 Meiosis::seed_rng(123L)

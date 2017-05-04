@@ -7,7 +7,10 @@
 check_xoparam(x)
 }
 \arguments{
-\item{x}{List. Crossover parameters}
+\item{x}{List. Crossover parameters.}
+}
+\value{
+\code{Null}
 }
 \description{
 Check if crossover parameters are valid.

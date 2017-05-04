@@ -6,18 +6,18 @@
 \title{Example data}
 \format{A list with 6 items
 \describe{
-  \item{xoparam}{List with crossover parameters}
+  \item{xoparam}{List with crossover parameters (see \code{\link{create_xoparam}})}
   \item{positions}{Genetic positions of loci}
   \item{ind}{Genotypic data of an individual}
   \item{ind2}{Genotypic data of another individual}
   \item{founder}{Segmental data of an individual}
   \item{founder2}{Segmental data of another individual}
 }
-For details on the data structures, see \code{vignette('Meiosis', package = 'Meiosis')}.}
+For details on the data structures, see \code{vignette('Introduction', package = 'Meiosis')}.}
 \usage{
 exdat
 }
 \description{
-Example data for illustrating the functions in Meiosis.
+Example data for illustration.
 }
 \keyword{datasets}

@@ -3,30 +3,32 @@
 \name{calc_Lstar}
 \alias{calc_Lstar}
 \alias{calc_Lstar}
-\title{Calculate adjusted chromosome length for obligate chiasma}
+\title{Calculate adjusted chromosome length for an obligate chiasma.}
 \usage{
 calc_Lstar(L, m, p, epsilon = NULL)
 }
 \arguments{
 \item{L}{Double. Length of the chromosome in cM. Must be > 50.}
 
-\item{m}{Integer. Interference parameter for chi-square model. Must be non-negative.}
+\item{m}{Integer. The interference parameter (\code{m = 0} is no interference).}
 
-\item{p}{Double. Proportion of chiasmata coming from no-interference process}
+\item{p}{Double. Proportion of chiasmata from no-interference mechanism.
+(\code{p = 0} gives pure chi-square model)}
 
 \item{epsilon}{Double. The precision for finding the adjusted chromosome length.
-Defaults to \code{NULL}, where a "high" precision is used.}
+Defaults to \code{NULL}, where a reasonably "high" precision is used.}
 }
 \value{
 Double. Adjusted chromosome length.
 }
 \description{
-This function is an R-wrapper of an underlying C++ routine.
-It is not intended for direct usage, but exposed for completeness.
-
 Calculate the reduced chromosome length that will give the target
 expected number of chiasmata when conditioning on there being at
 least one chiasma on the four-strand bundle.
+}
+\details{
+This function is an R-wrapper of an underlying C++ routine.
+It is not intended for direct usage, but exposed for completeness.
 }
 \examples{
 Meiosis::calc_Lstar(100, 0, 0)

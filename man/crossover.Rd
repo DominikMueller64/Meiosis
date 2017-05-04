@@ -8,39 +8,44 @@
 crossover(L, m, p, obligate_chiasma, Lstar)
 }
 \arguments{
-\item{L}{Double. Length of the chromosome in cM. Must be > 50.}
+\item{L}{Double. Length of the chromosome in cM.}
 
-\item{m}{Integer. Interference parameter for chi-square model. Must be non-negative.}
+\item{m}{Integer. The interference parameter (\code{m = 0} is no interference).}
 
-\item{p}{Double. Proportion of chiasmata coming from no-interference process}
+\item{p}{Double. Proportion of chiasmata from no-interference mechanism.
+(\code{p = 0} gives pure chi-square model)}
 
-\item{obligate_chiasma}{Logical. Should a least on the 4-strand bundle at meiosis.}
+\item{obligate_chiasma}{Logical. If TRUE, require an obligate chiasma on the
+4-strand bundle at meiosis. Only possible if all chromosomes are longer than 50 cM.}
 
 \item{Lstar}{Double. Reduced chromosome length as produced by \code{\link{calc_Lstar}}.}
 }
 \value{
-Numeric Vector. Crossover locations.
+Double Vector. Crossover locations.
 }
 \description{
 Simulate crossover locations on a single meiotic product using the
 Stahl model.
 }
 \details{
+This function is an R-wrapper of an underlying C++ routine.
+It is not intended for direct usage, but exposed for completeness.
+}
+\section{Model}{
+
 Chiasma locations are a superposition of two
 processes: a proportion p exhibiting no interference, and a
-proportion (1-p) following the chi-square model with interference
+proportion \code{(1 - p)} following the chi-square model with interference
 parameter m.  Crossover locations are derived by thinning the
-chiasma locations with probability 1/2.
+chiasma locations with probability \code{1/2}.
 
 Simulations are under the Stahl model with the
 interference parameter being an integer. This is an extension of
 the chi-square model, but with chiasmata being the superposition of
 two processes, one following the chi-square model and the other
 exhibiting no interference.
-
-This function is an R-wrapper of an underlying C++ routine.
-It is not intended for direct usage, but exposed for completeness.
 }
+
 \examples{
 Meiosis::crossover(300, 10, 0.5, FALSE, 300)
 
@@ -56,8 +61,4 @@ interference as a function of genetic distance. \emph{Genetics}
 Zhao, H., Speed, T. P. and McPeek, M. S. (1995) Statistical analysis
 of crossover interference using the chi-square model.  \emph{Genetics}
 \bold{139}, 1045--1056.
-}
-\author{
-Dominik Mueller \email{dominikmueller64@yahoo.de} and
-Karl W Broman, \email{kbroman@biostat.wisc.edu}
 }

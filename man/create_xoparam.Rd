@@ -7,14 +7,14 @@
 create_xoparam(L, m = 0L, p = 1, obligate_chiasma = FALSE)
 }
 \arguments{
-\item{L}{A vector with chromosome lengths in CentiMorgan of chr in cM.}
+\item{L}{Double vector. Chromosome lengths in CentiMorgan (cM).}
 
-\item{m}{An integer specifyin the interference parameter (\code{m = 0} is no interference).}
+\item{m}{Integer. The interference parameter (\code{m = 0} is no interference).}
 
-\item{p}{Proportion of chiasmata from no-interference mechanism.
+\item{p}{Double. Proportion of chiasmata from no-interference mechanism.
 (\code{p = 0} gives pure chi-square model)}
 
-\item{obligate_chiasma}{If TRUE, require an obligate chiasma on the
+\item{obligate_chiasma}{Logical. If TRUE, require an obligate chiasma on the
 4-strand bundle at meiosis. Only possible if all chromosomes are longer than 50 cM.}
 }
 \value{
@@ -26,23 +26,29 @@ Create a parameter list for simulating crossover locations on a single meiotic p
 using the Stahl model.
 }
 \details{
+If \code{obligate_chiasma = TRUE} and all chromsome are longer than 50 cM, reduced
+chromosome length with be internally calculated (\code{calc_Lstar}) that will give the
+target expected number of chiasmata when conditioning on there being at least one
+chiasma on the four-strand bundle.
+
+This description is adopted from the \href{https://github.com/kbroman/simcross}{simcross}
+package.
+}
+\section{Model}{
+
 Chiasma locations are a superposition of two
 processes: a proportion p exhibiting no interference, and a
-proportion (1-p) following the chi-square model with interference
+proportion \code{(1 - p)} following the chi-square model with interference
 parameter m.  Crossover locations are derived by thinning the
-chiasma locations with probability 1/2.
+chiasma locations with probability \code{1/2}.
 
 Simulations are under the Stahl model with the
 interference parameter being an integer. This is an extension of
 the chi-square model, but with chiasmata being the superposition of
 two processes, one following the chi-square model and the other
 exhibiting no interference.
-
-If \code{obligate_chiasma = TRUE} and all chromsome are longer than 50 cM, reduced
-chromosome length with be internally calculated (\code{calc_Lstar}) that will give the
-target expected number of chiasmata when conditioning on there being at least one
-chiasma on the four-strand bundle.
 }
+
 \examples{
 create_xoparam(L = c(50.5, 100.1, 133.5))
 
@@ -58,12 +64,4 @@ interference as a function of genetic distance. \emph{Genetics}
 Zhao, H., Speed, T. P. and McPeek, M. S. (1995) Statistical analysis
 of crossover interference using the chi-square model.  \emph{Genetics}
 \bold{139}, 1045--1056.
-}
-\seealso{
-\code{\link{calc_Lstar}}
-}
-\author{
-Dominik Mueller (\email{dominikmueller64@yahoo.de}),
-description mostly taken from the \href{https://github.com/kbroman/simcross}{simcross}
-package.
 }

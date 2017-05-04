@@ -56,6 +56,8 @@ check_geno_gamete <- function(x, nm = NULL) {
 #' @description Check if genetic positions are valid.
 #'
 #' @param x List. Genetic positions.
+#'
+#' @return \code{Null}
 #' @export
 check_positions <- function(x) {
   if (!is.list(x))
@@ -75,19 +77,25 @@ check_individual <- function(x, fun) {
   }
 }
 
-#' @title Check segmental representation.
+#' @title Check segmental representation of an individual.
 #' @description Check if the segmental representation is valid.
 #'
-#' @param x List. Individual
+#' @param x List. Individual.
+#'
+#' @return \code{Null}
+#'
 #' @export
 check_xo_individual <- function(x) {
   check_individual(x, fun = check_xo_gamete)
 }
 
-#' @title Check genotypic representation.
+#' @title Check genotypic representation of an individual.
 #' @description Check if the genotypic representation is valid.
 #'
-#' @param x List. Individual
+#' @param x List. Individual.
+#'
+#' @return \code{Null}
+#'
 #' @export
 check_geno_individual <- function(x) {
   check_individual(x, fun = check_geno_gamete)
@@ -96,7 +104,10 @@ check_geno_individual <- function(x) {
 #' @title Check crossover parameters.
 #' @description Check if crossover parameters are valid.
 #'
-#' @param x List. Crossover parameters
+#' @param x List. Crossover parameters.
+#'
+#' @return \code{Null}
+#'
 #' @export
 check_xoparam <- function(x) {
   req <- c('L', 'm', 'p', 'obligate_chiasma', 'Lstar')

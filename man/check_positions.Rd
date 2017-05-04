@@ -9,6 +9,9 @@ check_positions(x)
 \arguments{
 \item{x}{List. Genetic positions.}
 }
+\value{
+\code{Null}
+}
 \description{
 Check if genetic positions are valid.
 }

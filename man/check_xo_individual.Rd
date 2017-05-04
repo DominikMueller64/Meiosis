@@ -2,12 +2,15 @@
 % Please edit documentation in R/check_functions.R
 \name{check_xo_individual}
 \alias{check_xo_individual}
-\title{Check segmental representation.}
+\title{Check segmental representation of an individual.}
 \usage{
 check_xo_individual(x)
 }
 \arguments{
-\item{x}{List. Individual}
+\item{x}{List. Individual.}
+}
+\value{
+\code{Null}
 }
 \description{
 Check if the segmental representation is valid.

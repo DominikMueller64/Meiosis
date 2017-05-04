@@ -2,12 +2,15 @@
 % Please edit documentation in R/check_functions.R
 \name{check_geno_individual}
 \alias{check_geno_individual}
-\title{Check genotypic representation.}
+\title{Check genotypic representation of an individual.}
 \usage{
 check_geno_individual(x)
 }
 \arguments{
-\item{x}{List. Individual}
+\item{x}{List. Individual.}
+}
+\value{
+\code{Null}
 }
 \description{
 Check if the genotypic representation is valid.

@@ -14,7 +14,8 @@ meiosis_geno(individual, positions, xoparam, use_names = FALSE,
 
 \item{xoparam}{List. Crossover parameters.}
 
-\item{use_names}{Logical. Should loci names be preserved if present?}
+\item{use_names}{Logical. Should loci names be preserved if present?
+Names in \code{individual} supersede the ones in \code{positions}.}
 
 \item{check}{Logical. Should checks be performed?}
 }

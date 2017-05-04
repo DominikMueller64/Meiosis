@@ -7,14 +7,17 @@
 NULL
 
 #' @name seed_rng
-#' @title Seed the random number generator.
+#' @title Seed the random number generator of the C++ routines.
 #'
-#' @description A Mersenne Twister pseudo-random generator of 32-bit numbers with a state size of
-#' 10037 bits is used.
+#' @description A Mersenne Twister pseudo-random generator of 32-bit numbers
+#' with a state size of 10037 bits is used in the underlying C++ routines.
 #'
-#' @param seed Integer (default = \code{NULL}). If \code{NULL}, a random seed is used.
+#' @param seed Integer. If \code{NULL}, a random seed is used.
 #'
-#' @return Integer. The used seed.
+#' @details The state of the random number generator used by the C++ routines is not
+#' shared with the \code{R} session from which these routines are interfaced.
+#'
+#' @return Integer. The seed used.
 #'
 #' @examples
 #' Meiosis::seed_rng(123L)
@@ -24,20 +27,20 @@ NULL
 NULL
 
 #' @name calc_Lstar
-#' @title Calculate adjusted chromosome length for obligate chiasma
+#' @title Calculate adjusted chromosome length for an obligate chiasma.
 #'
-#' @description This function is an R-wrapper of an underlying C++ routine.
-#' It is not intended for direct usage, but exposed for completeness.
-#'
-#' Calculate the reduced chromosome length that will give the target
+#' @description Calculate the reduced chromosome length that will give the target
 #' expected number of chiasmata when conditioning on there being at
 #' least one chiasma on the four-strand bundle.
 #'
+#' @inheritParams create_xoparam
+#'
 #' @param L Double. Length of the chromosome in cM. Must be > 50.
-#' @param m Integer. Interference parameter for chi-square model. Must be non-negative.
-#' @param p Double. Proportion of chiasmata coming from no-interference process
 #' @param epsilon Double. The precision for finding the adjusted chromosome length.
-#' Defaults to \code{NULL}, where a "high" precision is used.
+#' Defaults to \code{NULL}, where a reasonably "high" precision is used.
+#'
+#' @details This function is an R-wrapper of an underlying C++ routine.
+#' It is not intended for direct usage, but exposed for completeness.
 #'
 #' @return Double. Adjusted chromosome length.
 #'
@@ -54,46 +57,22 @@ NULL
 #' @description Simulate crossover locations on a single meiotic product using the
 #' Stahl model.
 #'
-#' @param L Double. Length of the chromosome in cM. Must be > 50.
-#' @param m Integer. Interference parameter for chi-square model. Must be non-negative.
-#' @param p Double. Proportion of chiasmata coming from no-interference process
-#' @param obligate_chiasma Logical. Should a least on the 4-strand bundle at meiosis.
+#' @inheritParams create_xoparam
+#'
+#' @param L Double. Length of the chromosome in cM.
 #' @param Lstar Double. Reduced chromosome length as produced by \code{\link{calc_Lstar}}.
 #'
-#' @details Chiasma locations are a superposition of two
-#' processes: a proportion p exhibiting no interference, and a
-#' proportion (1-p) following the chi-square model with interference
-#' parameter m.  Crossover locations are derived by thinning the
-#' chiasma locations with probability 1/2.
-#'
-#' @details Simulations are under the Stahl model with the
-#' interference parameter being an integer. This is an extension of
-#' the chi-square model, but with chiasmata being the superposition of
-#' two processes, one following the chi-square model and the other
-#' exhibiting no interference.
+#' @inheritSection create_xoparam Model
 #'
 #' @details This function is an R-wrapper of an underlying C++ routine.
 #' It is not intended for direct usage, but exposed for completeness.
 #'
-#' @author Dominik Mueller \email{dominikmueller64@@yahoo.de} and
-#' Karl W Broman, \email{kbroman@@biostat.wisc.edu}
-#'
-#' @return Numeric Vector. Crossover locations.
+#' @return Double Vector. Crossover locations.
 #'
 #' @examples
 #' Meiosis::crossover(300, 10, 0.5, FALSE, 300)
 #'
-#' @references
-#' Copenhaver, G. P., Housworth, E. A. and Stahl, F. W. (2002) Crossover
-#' interference in arabidopsis.  \emph{Genetics} \bold{160}, 1631--1639.
-#'
-#' Foss, E., Lande, R., Stahl, F. W. and Steinberg, C. M. (1993) Chiasma
-#' interference as a function of genetic distance. \emph{Genetics}
-#' \bold{133}, 681--691.
-#'
-#' Zhao, H., Speed, T. P. and McPeek, M. S. (1995) Statistical analysis
-#' of crossover interference using the chi-square model.  \emph{Genetics}
-#' \bold{139}, 1045--1056.
+#' @inherit create_xoparam references
 #'
 #' @export
 NULL
@@ -107,6 +86,7 @@ NULL
 #' @param positions List. Genetic positions.
 #' @param xoparam List. Crossover parameters.
 #' @param use_names Logical. Should loci names be preserved if present?
+#' Names in \code{individual} supersede the ones in \code{positions}.
 #' @param check Logical. Should checks be performed?
 #'
 #' @return List. A new gamete.
@@ -136,6 +116,7 @@ meiosis_geno <- function(individual, positions, xoparam, use_names = FALSE, chec
 #' @param positions List. Genetic positions.
 #' @param xoparam List. Crossover parameters.
 #' @param use_names Logical. Should loci names be preserved if present?
+#' Names in \code{father} supersede the ones in \code{mother}, followed by \code{positions}.
 #' @param check Logical. Should checks be performed?
 #'
 #' @return List. A new individual.
@@ -164,6 +145,7 @@ cross_geno <- function(father, mother, positions, xoparam, use_names = FALSE, ch
 #' @param positions List. Genetic positions.
 #' @param xoparam List. Crossover parameters.
 #' @param use_names Logical. Should loci names be preserved if present?
+#' Names in \code{individual} supersede the ones in \code{positions}.
 #' @param check Logical. Should checks be performed?
 #'
 #' @return List. A new individual.
@@ -192,6 +174,7 @@ self_geno <- function(individual, positions, xoparam, use_names = FALSE, check =
 #' @param positions List. Genetic positions.
 #' @param xoparam List. Crossover parameters.
 #' @param use_names Logical. Should loci names be preserved if present?
+#' Names in \code{individual} supersede the ones in \code{positions}.
 #' @param check Logical. Should checks be performed?
 #'
 #' @return List. A new individual.
@@ -313,23 +296,24 @@ dh_xo <- function(individual, xoparam, check = FALSE) {
 #'
 #' @description Compute the realized coefficient of co-ancestry between two individuals.
 #'
-#' @param individual_1 List. A first Individual.
-#' @param individual_2 List. A second Individual. If \code{NULL}, self-relationship of
-#' \code{individual_1} is computed.
+#' @param individual_1 List. A first Individual in segmental representation.
+#' @param individual_2 List. A second Individual in segmental representation.
+#' If \code{NULL}, self-co-ancestry of \code{individual_1} is computed.
+#' 
 #' @param check Logical. Should checks be performed?
 #'
-#' @return double. Realized coefficient of co-ancestry.
+#' @return Double. Realized coefficient of co-ancestry.
 #'
 #' @details The realized coefficient of co-ancestry is (herein) defined as the probability
 #' that two alleles randomly drawn from one of the homologous chromosomes, each from one of the
 #' individuals, are identical-by-descent (as specified by origins of founder alleles).
 #'
 #' @examples
-##' \dontrun{
+#' \dontrun{
 #' data(exdat, package = 'Meiosis')
 #' Meiosis::realized_coancestry(Meiosis::dh_xo(exdat$founder, exdat$xoparam),
 #'                              Meiosis::dh_xo(exdat$founder, exdat$xoparam))
-##' }
+#' }
 #'
 #' @export
 realized_coancestry <- function(individual_1, individual_2 = NULL, check = FALSE) {
@@ -346,16 +330,16 @@ realized_coancestry <- function(individual_1, individual_2 = NULL, check = FALSE
 #' @description Compute the realized heterozygosity of an individual, i.e., the proportion of
 #' the genome where founder alleles match.
 #'
-#' @param individual List. Individual.
+#' @param individual List. Individual in segmental representation.
 #' @param check Logical. Should checks be performed?
 #'
 #' @return double. Realized heterozygosity.
 #'
 #' @examples
-##' \dontrun{
+#' \dontrun{
 #' data(exdat, package = 'Meiosis')
 #' Meiosis::realized_heter(Meiosis::cross_xo(exdat$founder, exdat$founder, exdat$xoparam))
-##' }
+#' }
 #'
 #' @export
 realized_heter <- function(individual, check = FALSE) {
@@ -368,17 +352,17 @@ realized_heter <- function(individual, check = FALSE) {
 #' @name exdat
 #' @title Example data
 #'
-#' @description Example data for illustrating the functions in Meiosis.
+#' @description Example data for illustration.
 #'
 #' @docType data
 #' @format A list with 6 items
 #' \describe{
-#'   \item{xoparam}{List with crossover parameters}
+#'   \item{xoparam}{List with crossover parameters (see \code{\link{create_xoparam}})}
 #'   \item{positions}{Genetic positions of loci}
 #'   \item{ind}{Genotypic data of an individual}
 #'   \item{ind2}{Genotypic data of another individual}
 #'   \item{founder}{Segmental data of an individual}
 #'   \item{founder2}{Segmental data of another individual}
 #' }
-#' For details on the data structures, see \code{vignette('Meiosis', package = 'Meiosis')}.
+#' For details on the data structures, see \code{vignette('Introduction', package = 'Meiosis')}.
 "exdat"
