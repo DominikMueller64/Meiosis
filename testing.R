@@ -1,12 +1,3 @@
-
-
-microbenchmark::microbenchmark(times = 100,
-restructure(individual)
-)
-
-rbind(bla =c('a' = 1, 'b' = 2), blup = c('a' = 88, 'b' =7), make.row.names = TRUE)
-
-
 library('rhub')
 print(rhub::platforms()$name)
 platform <- c('debian-gcc-devel', "debian-gcc-release",
@@ -23,14 +14,15 @@ rhub_check <- rhub::check(platform = platform,
 length(rhub_check)
 names(rhub_check)
 rhub_check$livelog()
-
+rhub_check$update()
+rhub_check$print()
 
 ?rhub::check_with_sanitizers
 rhub:::check_shortcut_platforms $sanitizers
 
-u <- cranlogs::cran_downloads('pedigree', from = '2010-01-01', to = 'last-day')
+u <- cranlogs::cran_downloads('Meiosis', from = '2017-04-01', to = 'last-day')
 plot(x = u$date, y = u$count)
-?devtools::check
+sum(u$count)
 
 
 library('Meiosis')

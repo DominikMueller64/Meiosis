@@ -19,7 +19,7 @@ A matrix or a list, depending on the parameter \code{struc}.
 \description{
 Restructure genotypic data into several forms.
 
-This function is not yet official part of the package!
+This function is not yet official part of the package:
 }
 \details{
 If \code{struc == '_'} (default), the result is a matrix (both chromosomes
