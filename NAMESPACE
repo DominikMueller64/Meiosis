@@ -38,3 +38,4 @@ export(Converter)
 # miscelaneous
 export(realized_coancestry)
 export(realized_heter)
+# export(restructure) ## Not yet officially included.

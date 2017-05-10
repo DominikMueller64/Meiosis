@@ -338,7 +338,7 @@ between individuals. We therefore simulate a small pedigree and used the package
 [pedigree](https://CRAN.R-project.org/package=pedigree) to compute additive
 genetic relationships.
 
-```{r, purl = TRUE}
+```{r, purl = FALSE}
 library('pedigree')
 
 ## Create a simple pedigree
@@ -395,7 +395,7 @@ str(conv$convert(Meiosis::dh_xo(f, xoparam)))
 We can also compute the realized heterozygosity of an individual, i.e., the proportion of
 the genome that is heterozygous with respect to the founder alleles present.
 
-```{r, purl = TRUE}
+```{r, purl = FALSE}
 ## Calculate realized heterozygosity.
 Meiosis::realized_heter(p_xo) 
 ```

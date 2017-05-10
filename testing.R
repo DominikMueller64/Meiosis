@@ -1,3 +1,12 @@
+
+
+microbenchmark::microbenchmark(times = 100,
+restructure(individual)
+)
+
+rbind(bla =c('a' = 1, 'b' = 2), blup = c('a' = 88, 'b' =7), make.row.names = TRUE)
+
+
 library('rhub')
 print(rhub::platforms()$name)
 platform <- c('debian-gcc-devel', "debian-gcc-release",

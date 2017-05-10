@@ -299,7 +299,7 @@ dh_xo <- function(individual, xoparam, check = FALSE) {
 #' @param individual_1 List. A first Individual in segmental representation.
 #' @param individual_2 List. A second Individual in segmental representation.
 #' If \code{NULL}, self-co-ancestry of \code{individual_1} is computed.
-#' 
+#'
 #' @param check Logical. Should checks be performed?
 #'
 #' @return Double. Realized coefficient of co-ancestry.

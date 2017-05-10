@@ -1,7 +1,18 @@
 .onAttach <- function(libname, pkgname) {
+  artwork <- "
+  /\\\\,/\\\\,
+ /| || ||         '              '
+ || || ||   _-_  \\  /'\\\\  _-_, \\\\  _-_,
+ ||=|= ||  || \\\\ || || || ||_.  || ||_.
+~|| || ||  ||/   || || ||  ~ || ||  ~ ||
+ |, \\\\,\\\\, \\\\,/  \\\\ \\\\,/  ,-_-  \\\\ ,-_-
+_-
+"
+  packageStartupMessage(artwork)
   packageStartupMessage(sprintf('Package Meiosis, version %s', utils::packageVersion(pkgname)))
   packageStartupMessage('Dominik Mueller')
-  packageStartupMessage("Use Meiosis::seed_rng to seed the random number generator (Mersenne Twister, std::mt19937)")
+  packageStartupMessage("Use Meiosis::seed_rng to seed the RNG of the C++ routines ",
+                        "(Mersenne Twister)")
   packageStartupMessage("Otherwise a random seed is used.")
   invisible()
 }
